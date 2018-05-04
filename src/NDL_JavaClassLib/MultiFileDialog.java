@@ -29,6 +29,7 @@ public class MultiFileDialog extends javax.swing.JDialog {
     private final int EXIT = 0;
     private final int SUCCESS = 2;
     private final int CLOSE = -1;
+    private final int error = -2;
     
     /** Creates new form MultiFileDialog
      * @param parent

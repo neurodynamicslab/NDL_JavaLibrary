@@ -1,0 +1,9 @@
+[core]
+	symlinks = false
+	repositoryformatversion = 0
+	filemode = false
+	logallrefupdates = true
+	bare = false
+[remote "origin"]
+	url = https://theneurodynamicslab%40gmail.com@github.com/neurodynamicslab/NDL_JavaClassLibrary.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
