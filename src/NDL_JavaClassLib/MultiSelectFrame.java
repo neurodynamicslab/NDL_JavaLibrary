@@ -53,6 +53,7 @@ public class MultiSelectFrame extends javax.swing.JFrame {
         initComponents();
         FileList.setModel(FileListData);
         
+        
     }
 
     /** This method is called from within the constructor to
