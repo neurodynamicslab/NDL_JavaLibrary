@@ -23,6 +23,13 @@ import javax.swing.*;
 public class MultiFileDialog extends javax.swing.JDialog {
     private File[] Selection = null;
     private DefaultListModel FileListData = new DefaultListModel();
+    
+    private  int result;         //reporter varialble for various result underwhich the dialog is exitied.
+    private final int OPEN = 1;
+    private final int EXIT = 0;
+    private final int SUCCESS = 2;
+    private final int CLOSE = -1;
+    
     /** Creates new form MultiFileDialog
      * @param parent
      * @param modal
@@ -176,6 +183,8 @@ public class MultiFileDialog extends javax.swing.JDialog {
                 if(! FileListData.contains(path))
                     FileListData.addElement(path);
             }
+        if(FileListData.getSize() > 0)
+            this.OpenButton.setEnabled(true);
         // TODO add your handling code here:
 }//GEN-LAST:event_AddButtonActionPerformed
 
@@ -187,12 +196,21 @@ public class MultiFileDialog extends javax.swing.JDialog {
                 SelValues[count] = (String)FileListData.get(SelInx[count]);
             for(int count = 0 ; count < SelValues.length ; count++ )
                 FileListData.removeElement(SelValues[count]);
+            if(FileListData.getSize() == 0)
+                this.OpenButton.setEnabled(false);
         }
         // TODO add your handling code here:
 }//GEN-LAST:event_RemoveButtonActionPerformed
 
     private void OpenButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenButtonActionPerformed
         //this.addButtonAction();
+        if(FileListData.getSize() > 0){     //atleast one file has been selected
+            this.result = this.SUCCESS;
+        }else{
+            this.result = this.OPEN;        //the dialog got closed through open buttone without selecting any files
+                                            //ideal would be to display a message or diable the open button 
+                                            // depending the length of selection list
+        }
         this.setVisible(false);
                 // TODO add your handling code here:
 }//GEN-LAST:event_OpenButtonActionPerformed
@@ -247,6 +265,19 @@ public String getCloseCommand() {
 }
 /**
  *
+ * Returns the array of filenames that have been selected
+ * @return
+ */
+ public String [] getSelectionArray(){
+        int nFiles = FileListData.getSize();
+        String [] Path = new String[nFiles];
+        for(int i = 0 ; i < nFiles ; i++){
+            Path[i] = (String) FileListData.get(i);
+        }
+        return Path;
+    }
+/**
+ *
  * @param Instance
  * @param Cmd
  * @return
@@ -276,5 +307,12 @@ public String  setCloseAction(ActionListener Instance, String Cmd){
     public String getDirectory() {
         //throw new UnsupportedOperationException("Not yet implemented");
         return FileSelDialog.getCurrentDirectory().getName();
+    }
+
+    /**
+     * @return the result
+     */
+    public int getResult() {
+        return result;
     }
 }
