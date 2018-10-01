@@ -1700,12 +1700,13 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
         Peaks.showRowNumbers(true);
         Peaks.show("Gaussian Peaks");
         String currentFilename = currentImp.getTitle();
-        if(!currentFilename.equalsIgnoreCase(this.prevFilename)){
+        /*if(!currentFilename.equalsIgnoreCase(this.prevFilename)){
             prevFilename = currentFilename;
             Peaks.incrementCounter();
             Peaks.addValue("FName", currentFilename);
-        }
-        
+        }*/
+        Peaks.incrementCounter();
+        Peaks.addValue("FName", currentFilename);
         
         for(int curSlice = 1 ; curSlice < stkSize ; curSlice++){
             rt.incrementCounter();
