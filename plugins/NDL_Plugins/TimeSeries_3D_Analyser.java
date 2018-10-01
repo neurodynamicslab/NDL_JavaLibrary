@@ -281,7 +281,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
         remove2Dfrom3D = new javax.swing.JButton();
         transferfromManager = new javax.swing.JButton();
         recenterIn2D = new javax.swing.JButton();
-        recenterProperties = new javax.swing.JButton();
+        ResetPaths = new javax.swing.JButton();
         buttonExit = new javax.swing.JButton();
         panel_3DBtns_ChkBox = new javax.swing.JPanel();
         AddOnClick = new javax.swing.JCheckBox();
@@ -308,7 +308,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
         gui2DRoiList = new javax.swing.JList<>();
         btnClearAll2D = new javax.swing.JButton();
         showAllRois = new javax.swing.JCheckBox();
-        jCheckBox3 = new javax.swing.JCheckBox();
+        radBtnshowRT = new javax.swing.JCheckBox();
 
         TranslateRoi.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         TranslateRoi.setTitle("Translate Rois");
@@ -980,8 +980,13 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
             }
         });
 
-        recenterProperties.setText("Recenter Properties");
-        recenterProperties.setEnabled(false);
+        ResetPaths.setText("Reset Paths/Directories");
+        ResetPaths.setEnabled(false);
+        ResetPaths.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ResetPathsActionPerformed(evt);
+            }
+        });
 
         buttonExit.setText("Done !");
         buttonExit.addActionListener(new java.awt.event.ActionListener() {
@@ -1187,7 +1192,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
         showAllRois.setSelected(true);
         showAllRois.setText("Show 3D Rois in Slice");
 
-        jCheckBox3.setText("Show Intensity Profile");
+        radBtnshowRT.setText("Show ROi Instensities");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -1216,17 +1221,17 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
                         .addComponent(remove2Dfrom3D, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(transferfromManager, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(recenterIn2D, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(recenterProperties, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(ResetPaths, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnClearAll2D, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(showAllRois)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(52, 52, 52)
                         .addComponent(buttonExit, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jCheckBox3))
+                    .addComponent(radBtnshowRT))
                 .addContainerGap())
         );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {addto3Dlist, mv2Manager, recenterIn2D, recenterProperties, remove2Dfrom3D, transferfromManager});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {ResetPaths, addto3Dlist, mv2Manager, recenterIn2D, remove2Dfrom3D, transferfromManager});
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1253,13 +1258,13 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
                         .addGap(1, 1, 1)
                         .addComponent(recenterIn2D)
                         .addGap(1, 1, 1)
-                        .addComponent(recenterProperties)
+                        .addComponent(ResetPaths)
                         .addGap(1, 1, 1)
                         .addComponent(btnClearAll2D, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(showAllRois, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jCheckBox3)
+                        .addComponent(radBtnshowRT)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buttonExit, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(52, 52, 52)))
@@ -1687,7 +1692,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
         int stkSize = currentImp.getStackSize();
         ImageStatistics stat;
         //Roi[] rois;
-        
+        ResultsTable Peaks = new ResultsTable();
         for(int curSlice = 1 ; curSlice < stkSize ; curSlice++){
             rt.incrementCounter();
             currentImp.setSlice(curSlice);
@@ -1702,7 +1707,8 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
             }           
         }
         rt.showRowNumbers(true);
-        rt.show("3D Roi Mean Measurements of " + currentImp.getTitle());
+        if(radBtnshowRT.isSelected())
+            rt.show("3D Roi Mean Measurements of " + currentImp.getShortTitle());
         
         
         if(true /*Gaussian Fits*/){
@@ -1738,7 +1744,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
                 double [] params = fitter.getParams();
                 double [] params2 = new double[params.length];
                 
-                IJ.log(fitter.getResultString() +"\n"+ " /***/ "+"\n" + fitter.getStatusString());
+                //IJ.log(fitter.getResultString() +"\n"+ " /***/ "+"\n" + fitter.getStatusString());
                 
                 fitRes.incrementCounter();
                 fitRes.addLabel(Label);
@@ -1776,15 +1782,17 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
                 
                 
                 double [] params3 = fitterOffset.getParams();
-                IJ.log(fitterOffset.getResultString() +"\n"+ "/***/"+"\n" + fitterOffset.getStatusString());
+                //IJ.log(fitterOffset.getResultString() +"\n"+ "/***/"+"\n" + fitterOffset.getStatusString());
                 
-                
+                Peaks.incrementCounter();
+                Peaks.addValue("FName", currentImp.getTitle());
+                Peaks.addValue("Gaussian Amplitude",params3[1]);
+               
                 GaussOffsetFits.incrementCounter();
                 GaussOffsetFits.addLabel(Label);
                 int p2Count = 0;
                 for(double value : params3){
                     GaussOffsetFits.addValue("P"+ p2Count++, value);
-                    
                 }
                 p2Count = 0;
                 for(double value : params2){
@@ -1794,8 +1802,10 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
                GaussOffsetFits.addValue("RSquared",  fitterOffset.getRSquared());
             
             }
-            fitRes.show("Gaussian Fits of "+ currentImp.getTitle());
-            GaussOffsetFits.show("Gaussian Fits with Offsets of "+ currentImp.getTitle());
+            if(radBtnshowRT.isSelected()){
+                fitRes.show("Gaussian Fits of "+ currentImp.getShortTitle());
+                GaussOffsetFits.show("Gaussian Fits with Offsets of "+ currentImp.getShortTitle());
+            }
             if(this.resultsDirectory == null){
                 JFileChooser fc = new JFileChooser();
                 fc.setDialogTitle("Choose the Directory to Save the Results");
@@ -1814,6 +1824,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
             fitRes.save(resultsDirectory+File.separator+fitRes.getTitle());
             rt.save(resultsDirectory+File.separator+rt.getTitle());
            
+            
             
         }
         
@@ -2069,6 +2080,12 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
         // TODO add your handling code here:
         setBgdDialog.setVisible(false);
     }//GEN-LAST:event_btn_cancelSetBgdActionPerformed
+
+    private void ResetPathsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ResetPathsActionPerformed
+        // TODO add your handling code here:
+        defaultPath = null;
+        this.resultsDirectory = null;
+    }//GEN-LAST:event_ResetPathsActionPerformed
 
     private void MvRois(boolean relative, boolean allRois, int xShift, int yShift, int zShift) throws HeadlessException {
         if(relative){
@@ -2378,6 +2395,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox AddOnClick;
+    private javax.swing.JButton ResetPaths;
     private javax.swing.JFrame TranslateRoi;
     private javax.swing.JRadioButton add2D_rad_btn;
     private javax.swing.JRadioButton add3D_rad_btn;
@@ -2425,7 +2443,6 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
     private javax.swing.JTextField guiroiWidth;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JCheckBox jCheckBox3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -2452,8 +2469,8 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
     private javax.swing.JRadioButton radBtnMvinSlice;
     private javax.swing.JRadioButton radBtn_AbsMove;
     private javax.swing.JRadioButton radBtn_RelativeMove;
+    private javax.swing.JCheckBox radBtnshowRT;
     private javax.swing.JButton recenterIn2D;
-    private javax.swing.JButton recenterProperties;
     private javax.swing.JButton remove2Dfrom3D;
     private javax.swing.JScrollPane scrlPane_2D_RoiLst;
     private javax.swing.JScrollPane scrlPane_3D_RoiLst;

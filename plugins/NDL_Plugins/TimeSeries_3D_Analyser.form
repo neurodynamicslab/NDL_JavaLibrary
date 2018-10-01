@@ -1050,7 +1050,7 @@
                       <Component id="remove2Dfrom3D" linkSize="2" max="32767" attributes="0"/>
                       <Component id="transferfromManager" linkSize="2" max="32767" attributes="0"/>
                       <Component id="recenterIn2D" linkSize="2" max="32767" attributes="0"/>
-                      <Component id="recenterProperties" linkSize="2" max="32767" attributes="0"/>
+                      <Component id="ResetPaths" linkSize="2" max="32767" attributes="0"/>
                       <Component id="btnClearAll2D" alignment="0" max="32767" attributes="0"/>
                   </Group>
                   <Component id="showAllRois" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -1058,7 +1058,7 @@
                       <EmptySpace min="-2" pref="52" max="-2" attributes="0"/>
                       <Component id="buttonExit" min="-2" pref="102" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="jCheckBox3" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="radBtnshowRT" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -1091,13 +1091,13 @@
                       <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
                       <Component id="recenterIn2D" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
-                      <Component id="recenterProperties" min="-2" max="-2" attributes="0"/>
+                      <Component id="ResetPaths" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
                       <Component id="btnClearAll2D" min="-2" pref="30" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="showAllRois" min="-2" pref="52" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jCheckBox3" min="-2" max="-2" attributes="0"/>
+                      <Component id="radBtnshowRT" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="buttonExit" min="-2" pref="77" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="52" max="-2" attributes="0"/>
@@ -1159,11 +1159,14 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="recenterIn2DActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="recenterProperties">
+    <Component class="javax.swing.JButton" name="ResetPaths">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Recenter Properties"/>
+        <Property name="text" type="java.lang.String" value="Reset Paths/Directories"/>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ResetPathsActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="buttonExit">
       <Properties>
@@ -1455,9 +1458,9 @@
         <Property name="text" type="java.lang.String" value="Show 3D Rois in Slice"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JCheckBox" name="jCheckBox3">
+    <Component class="javax.swing.JCheckBox" name="radBtnshowRT">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Show Intensity Profile"/>
+        <Property name="text" type="java.lang.String" value="Show ROi Instensities"/>
       </Properties>
     </Component>
   </SubComponents>
