@@ -1162,7 +1162,6 @@
     <Component class="javax.swing.JButton" name="ResetPaths">
       <Properties>
         <Property name="text" type="java.lang.String" value="Reset Paths/Directories"/>
-        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ResetPathsActionPerformed"/>
@@ -1460,7 +1459,7 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="radBtnshowRT">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Show ROi Instensities"/>
+        <Property name="text" type="java.lang.String" value="Show ROi Intensities"/>
       </Properties>
     </Component>
   </SubComponents>

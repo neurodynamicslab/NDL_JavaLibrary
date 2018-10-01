@@ -103,6 +103,8 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
     private int yShiftTotal;
     private int zShiftTotal;
     private String resultsDirectory = null;
+    private ResultsTable Peaks;
+    private String prevFilename;
 
     private void deconstruct3Dto2D(int selIdx) {
         
@@ -981,7 +983,6 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
         });
 
         ResetPaths.setText("Reset Paths/Directories");
-        ResetPaths.setEnabled(false);
         ResetPaths.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ResetPathsActionPerformed(evt);
@@ -1192,7 +1193,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
         showAllRois.setSelected(true);
         showAllRois.setText("Show 3D Rois in Slice");
 
-        radBtnshowRT.setText("Show ROi Instensities");
+        radBtnshowRT.setText("Show ROi Intensities");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -1692,7 +1693,18 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
         int stkSize = currentImp.getStackSize();
         ImageStatistics stat;
         //Roi[] rois;
-        ResultsTable Peaks = new ResultsTable();
+        
+        this.Peaks =  Peaks != null ? Peaks : new ResultsTable();
+        Peaks.showRowNumbers(true);
+        Peaks.show("Gaussian Peaks");
+        String currentFilename = currentImp.getTitle();
+        if(!currentFilename.equalsIgnoreCase(this.prevFilename)){
+            prevFilename = currentFilename;
+            Peaks.incrementCounter();
+            Peaks.addValue("FName", currentFilename);
+        }
+        
+        
         for(int curSlice = 1 ; curSlice < stkSize ; curSlice++){
             rt.incrementCounter();
             currentImp.setSlice(curSlice);
@@ -1784,9 +1796,9 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
                 double [] params3 = fitterOffset.getParams();
                 //IJ.log(fitterOffset.getResultString() +"\n"+ "/***/"+"\n" + fitterOffset.getStatusString());
                 
-                Peaks.incrementCounter();
-                Peaks.addValue("FName", currentImp.getTitle());
-                Peaks.addValue("Gaussian Amplitude",params3[1]);
+                
+                
+                Peaks.addValue(Label,params3[1]);
                
                 GaussOffsetFits.incrementCounter();
                 GaussOffsetFits.addLabel(Label);
@@ -1823,7 +1835,8 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
             IJ.log(""+ resultsDirectory+File.separator+GaussOffsetFits.getTitle()+".csv"+ " saved");
             fitRes.save(resultsDirectory+File.separator+fitRes.getTitle());
             rt.save(resultsDirectory+File.separator+rt.getTitle());
-           
+            Peaks.showRowNumbers(true);
+            Peaks.show("Gaussian Peaks with Offset Correction");
             
             
         }
