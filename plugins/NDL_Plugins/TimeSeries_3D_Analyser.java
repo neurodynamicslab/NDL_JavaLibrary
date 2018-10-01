@@ -1660,11 +1660,13 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
                 roi3DCount = 0;
                 this.combinedRoi = new ShapeRoi (new Roi(0,0,0,0));
             }
-        }
-        else{       
+        }else{       
             
-            if(combinedRoi != null )
-            this.combinedRoi.not((ShapeRoi) Rois3D.get(idx).get2DRoi(combinedRoi.getPosition()));
+            if(combinedRoi != null ){
+                 ShapeRoi sr = new ShapeRoi (Rois3D.get(idx).get2DRoi(combinedRoi.getPosition()));
+                 this.combinedRoi.not(sr);
+            }
+               
             this.Roi3DListModel.remove(idx);
             this.Rois3D.remove(idx);
             this.roi3DCount--;
