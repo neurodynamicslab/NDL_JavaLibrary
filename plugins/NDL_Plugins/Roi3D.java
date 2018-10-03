@@ -298,7 +298,7 @@ public class Roi3D{
      * @return Error Status: True means error has occurred
      */
     public boolean addRoiSet(Roi[] roiset){
-       boolean status = false;
+       boolean status = false; 
        for(Roi roi : roiset){
          status = addRoi(roi);  
        }
