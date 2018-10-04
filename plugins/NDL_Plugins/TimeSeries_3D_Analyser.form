@@ -1059,6 +1059,7 @@
                       <Component id="buttonExit" min="-2" pref="102" max="-2" attributes="0"/>
                   </Group>
                   <Component id="radBtnshowRT" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="ckBxRectrForMeasurement" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -1098,6 +1099,8 @@
                       <Component id="showAllRois" min="-2" pref="52" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="radBtnshowRT" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="ckBxRectrForMeasurement" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="buttonExit" min="-2" pref="77" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="52" max="-2" attributes="0"/>
@@ -1460,6 +1463,11 @@
     <Component class="javax.swing.JCheckBox" name="radBtnshowRT">
       <Properties>
         <Property name="text" type="java.lang.String" value="Show ROi Intensities"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="ckBxRectrForMeasurement">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Recenter for Measuring"/>
       </Properties>
     </Component>
   </SubComponents>

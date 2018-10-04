@@ -311,6 +311,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
         btnClearAll2D = new javax.swing.JButton();
         showAllRois = new javax.swing.JCheckBox();
         radBtnshowRT = new javax.swing.JCheckBox();
+        ckBxRectrForMeasurement = new javax.swing.JCheckBox();
 
         TranslateRoi.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         TranslateRoi.setTitle("Translate Rois");
@@ -1195,6 +1196,8 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
 
         radBtnshowRT.setText("Show ROi Intensities");
 
+        ckBxRectrForMeasurement.setText("Recenter for Measuring");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -1228,7 +1231,8 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
                     .addGroup(layout.createSequentialGroup()
                         .addGap(52, 52, 52)
                         .addComponent(buttonExit, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(radBtnshowRT))
+                    .addComponent(radBtnshowRT)
+                    .addComponent(ckBxRectrForMeasurement))
                 .addContainerGap())
         );
 
@@ -1266,6 +1270,8 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
                         .addComponent(showAllRois, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(radBtnshowRT)
+                        .addGap(18, 18, 18)
+                        .addComponent(ckBxRectrForMeasurement)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buttonExit, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(52, 52, 52)))
@@ -1567,7 +1573,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
         //ArrayList selList;
         int [] selListIdx;
         selListIdx = gui3DRoiList.getSelectedIndices();
-        
+        IJ.showStatus("Starting to recenter...");
         if(selListIdx.length == 0){                             //if no 3D roi is selected then select all
             int listSz = gui3DRoiList.getModel().getSize();
             selListIdx = new int[listSz];
@@ -1578,8 +1584,16 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
         int zConvergeLimit = 1;
         int maxIterations = 20;
         currentImp = WindowManager.getCurrentImage();
+        if(currentImp == null || !currentImp.isStack()){
+            IJ.showMessage("Invalid Image or stack");
+            return;
+        }
+        int dispSlice = currentImp.getCurrentSlice();
+        
         for(int Idx : selListIdx){
+            
             Roi3D roi3D = Rois3D.get(Idx);
+            recenter(roi3D);
             boolean converged = false;
             int iterations = 0;
             
@@ -1609,7 +1623,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
                       }
                 }
                 int zDiff =  zatmaxIntensity - roi3D.getCenterZ();
-                System.out.print("\n Iteration #: " + iterations + " maxIntensity " +maxIntensity + " z of Max : "+ zatmaxIntensity +" present diff: " +zDiff + "\n");
+            //    System.out.print("\n Iteration #: " + iterations + " maxIntensity " +maxIntensity + " z of Max : "+ zatmaxIntensity +" present diff: " +zDiff + "\n");
                 if(Math.abs(zDiff) > zConvergeLimit){
                     roi3D.repositionZ(zDiff);
                     recenter(roi3D);
@@ -1617,7 +1631,11 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
                     converged = true;
                 }
             }
+        
         }
+        currentImp.setSlice(dispSlice);
+        currentImp.updateAndRepaintWindow();
+        IJ.showStatus("Recentering Done...");
     }
     private void btnRecenter3DActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecenter3DActionPerformed
         // TODO add your handling code here:
@@ -1690,6 +1708,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
     private void btnMeasure3DActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMeasure3DActionPerformed
         // TODO add your handling code here:
         //this.resultsDirectory = null;
+        this.recenterInZ();
         ResultsTable rt = new ResultsTable();
         currentImp = WindowManager.getCurrentImage();
         if(currentImp == null)
@@ -2444,6 +2463,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
     private javax.swing.JButton buttonAutoRoi;
     private javax.swing.JButton buttonExit;
     private javax.swing.JCheckBox chkBxRectrOnAdding;
+    private javax.swing.JCheckBox ckBxRectrForMeasurement;
     private javax.swing.JButton closeButton;
     private javax.swing.JList<String> gui2DRoiList;
     private javax.swing.JTextField gui3DDepth;
