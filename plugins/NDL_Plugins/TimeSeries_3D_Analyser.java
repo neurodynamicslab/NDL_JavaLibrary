@@ -105,6 +105,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
     private String resultsDirectory = null;
     private ResultsTable Peaks;
     private String prevFilename = "";
+    private File[] selFiles;
 
     private void deconstruct3Dto2D(int selIdx) {
         
@@ -288,7 +289,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
         panel_3DBtns_ChkBox = new javax.swing.JPanel();
         AddOnClick = new javax.swing.JCheckBox();
         btnRecenter3D = new javax.swing.JButton();
-        btnDefOverlap = new javax.swing.JButton();
+        btnReload3DRois = new javax.swing.JButton();
         btnMeasure3D = new javax.swing.JButton();
         make3Dbutton = new javax.swing.JButton();
         buttonAutoRoi = new javax.swing.JButton();
@@ -1013,8 +1014,12 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
             }
         });
 
-        btnDefOverlap.setText("Define Overlap");
-        btnDefOverlap.setEnabled(false);
+        btnReload3DRois.setText("Reload 3D Rois");
+        btnReload3DRois.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReload3DRoisActionPerformed(evt);
+            }
+        });
 
         btnMeasure3D.setText("Measure in 3D");
         btnMeasure3D.addActionListener(new java.awt.event.ActionListener() {
@@ -1114,7 +1119,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
                         .addComponent(btnMeasure3D, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnSetMeasurements, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnDetOverlap, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnDefOverlap, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnReload3DRois, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnGenGauInt, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnSave3DRois, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnOpen3DRois, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -1129,7 +1134,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        panel_3DBtns_ChkBoxLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnDefOverlap, btnDetOverlap, btnGenGauInt, btnMeasure3D, btnRecenter3D, btnSetBackGround, btnSetMeasurements, buttonAutoRoi, make3Dbutton, zRecenter});
+        panel_3DBtns_ChkBoxLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnDetOverlap, btnGenGauInt, btnMeasure3D, btnRecenter3D, btnReload3DRois, btnSetBackGround, btnSetMeasurements, buttonAutoRoi, make3Dbutton, zRecenter});
 
         panel_3DBtns_ChkBoxLayout.setVerticalGroup(
             panel_3DBtns_ChkBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1151,7 +1156,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
                 .addGap(1, 1, 1)
                 .addComponent(btnDetOverlap)
                 .addGap(1, 1, 1)
-                .addComponent(btnDefOverlap)
+                .addComponent(btnReload3DRois)
                 .addGap(2, 2, 2)
                 .addComponent(btnGenGauInt)
                 .addGap(1, 1, 1)
@@ -1516,21 +1521,28 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
         fileOpener.setDialogType(JFileChooser.FILES_ONLY);
         fileOpener.setMultiSelectionEnabled(true);
         int status = fileOpener.showOpenDialog(this);
-        File [] selFiles;
+        //File [] selFiles;
         Roi3D tmpRoi;
+       
         
         if(status == JFileChooser.APPROVE_OPTION){
-            selFiles = fileOpener.getSelectedFiles();
-            for(File f :selFiles){
-               tmpRoi = roi3DFileReader(f);
-               this.Rois3D.add(tmpRoi);
-               this.Roi3DListModel.addElement(tmpRoi.getName());
-               this.roi3DCount++;
-            }
+           this.selFiles = fileOpener.getSelectedFiles();
+            
+            load3DRois();
         }
         if(currentImp != null)
             this.currentImp.updateAndDraw();
     }//GEN-LAST:event_btnOpen3DRoisActionPerformed
+
+    private void load3DRois() {
+        Roi3D tmpRoi;
+        for(File f :selFiles){
+            tmpRoi = roi3DFileReader(f);
+            this.Rois3D.add(tmpRoi);
+            this.Roi3DListModel.addElement(tmpRoi.getName());
+            this.roi3DCount++;
+        }
+    }
 
     private void buttonAutoRoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAutoRoiActionPerformed
         // TODO add your handling code here:
@@ -1708,7 +1720,8 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
     private void btnMeasure3DActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMeasure3DActionPerformed
         // TODO add your handling code here:
         //this.resultsDirectory = null;
-        this.recenterInZ();
+        if(this.ckBxRectrForMeasurement.isSelected())
+            recenterInZ();
         ResultsTable rt = new ResultsTable();
         currentImp = WindowManager.getCurrentImage();
         if(currentImp == null)
@@ -2125,6 +2138,11 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
         this.resultsDirectory = null;
     }//GEN-LAST:event_ResetPathsActionPerformed
 
+    private void btnReload3DRoisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReload3DRoisActionPerformed
+        // TODO add your handling code here:
+        this.load3DRois();
+    }//GEN-LAST:event_btnReload3DRoisActionPerformed
+
     private void MvRois(boolean relative, boolean allRois, int xShift, int yShift, int zShift) throws HeadlessException {
         if(relative){
             
@@ -2299,7 +2317,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
                 if (imp != null){
                     ImageWindow Win = imp.getWindow();
                     ImageCanvas canvas = Win.getCanvas();
-
+                    
                     int offscreenX = canvas.offScreenX(x);
                     int offscreenY = canvas.offScreenY(y);
                     int Start_x = offscreenX - (int)(roiWidth/2);
@@ -2439,7 +2457,6 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
     private javax.swing.JRadioButton add3D_rad_btn;
     private javax.swing.JButton addto3Dlist;
     private javax.swing.JButton btnClearAll2D;
-    private javax.swing.JButton btnDefOverlap;
     private javax.swing.JButton btnDel3DRoi;
     private javax.swing.JButton btnDetOverlap;
     private javax.swing.JButton btnEast;
@@ -2450,6 +2467,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
     private javax.swing.JButton btnNorth;
     private javax.swing.JButton btnOpen3DRois;
     private javax.swing.JButton btnRecenter3D;
+    private javax.swing.JButton btnReload3DRois;
     private javax.swing.JButton btnResetinMove;
     private javax.swing.JButton btnSave3DRois;
     private javax.swing.JButton btnSetBackGround;

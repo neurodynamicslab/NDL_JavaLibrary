@@ -1204,7 +1204,7 @@
                           <Component id="btnMeasure3D" linkSize="1" alignment="0" max="32767" attributes="0"/>
                           <Component id="btnSetMeasurements" linkSize="1" alignment="0" max="32767" attributes="0"/>
                           <Component id="btnDetOverlap" linkSize="1" alignment="0" max="32767" attributes="0"/>
-                          <Component id="btnDefOverlap" linkSize="1" alignment="0" max="32767" attributes="0"/>
+                          <Component id="btnReload3DRois" linkSize="1" alignment="0" max="32767" attributes="0"/>
                           <Component id="btnGenGauInt" linkSize="1" alignment="0" max="32767" attributes="0"/>
                           <Component id="btnSave3DRois" alignment="0" max="32767" attributes="0"/>
                           <Component id="btnOpen3DRois" alignment="0" max="32767" attributes="0"/>
@@ -1245,7 +1245,7 @@
                   <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
                   <Component id="btnDetOverlap" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
-                  <Component id="btnDefOverlap" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnReload3DRois" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                   <Component id="btnGenGauInt" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
@@ -1286,11 +1286,13 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRecenter3DActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="btnDefOverlap">
+        <Component class="javax.swing.JButton" name="btnReload3DRois">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Define Overlap"/>
-            <Property name="enabled" type="boolean" value="false"/>
+            <Property name="text" type="java.lang.String" value="Reload 3D Rois"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnReload3DRoisActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnMeasure3D">
           <Properties>
