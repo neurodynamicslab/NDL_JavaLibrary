@@ -106,6 +106,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
     private ResultsTable Peaks;
     private String prevFilename = "";
     private File[] selFiles;
+    private ResultsTable CorPeaks;
 
     private void deconstruct3Dto2D(int selIdx) {
         
@@ -1722,6 +1723,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
         //this.resultsDirectory = null;
         if(this.ckBxRectrForMeasurement.isSelected())
             recenterInZ();
+        
         ResultsTable rt = new ResultsTable();
         currentImp = WindowManager.getCurrentImage();
         if(currentImp == null)
@@ -1734,7 +1736,11 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
         ImageStatistics stat;
         
         this.Peaks =  Peaks != null ? Peaks : new ResultsTable();
+        this.CorPeaks = CorPeaks != null ? CorPeaks : new ResultsTable();
+        
         Peaks.showRowNumbers(true);
+        CorPeaks.showRowNumbers(true);
+        
         //Peaks.show("Gaussian Peaks");
        
         String currentFilename = currentImp.getTitle();
@@ -1742,7 +1748,10 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
         
         if(newFile){
             prevFilename = currentFilename;
+            CorPeaks.incrementCounter();
             Peaks.incrementCounter();
+            
+            CorPeaks.addValue("FName",currentFilename);
             Peaks.addValue("FName", currentFilename);
         }
         //Peaks.incrementCounter();
