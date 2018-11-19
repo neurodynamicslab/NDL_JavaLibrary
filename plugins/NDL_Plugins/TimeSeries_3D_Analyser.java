@@ -2149,7 +2149,11 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
 
     private void btnReload3DRoisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReload3DRoisActionPerformed
         // TODO add your handling code here:
+        int [] selIdx = this.gui3DRoiList.getSelectedIndices();
+        this.gui3DRoiList.clearSelection();
+        this.btnDel3DRoiActionPerformed(evt);
         this.load3DRois();
+        this.gui3DRoiList.setSelectedIndices(selIdx);
     }//GEN-LAST:event_btnReload3DRoisActionPerformed
 
     private void MvRois(boolean relative, boolean allRois, int xShift, int yShift, int zShift) throws HeadlessException {
@@ -2312,7 +2316,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
       recentering = false;  //done
     }
     @Override
-    public void mouseClicked(MouseEvent me) {
+    public void mouseClicked(MouseEvent me)  {
        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         
        if (AddOnClick.isSelected()){
