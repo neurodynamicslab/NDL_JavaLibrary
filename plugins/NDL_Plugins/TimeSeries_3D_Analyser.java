@@ -1683,6 +1683,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
     private void btnDel3DRoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDel3DRoiActionPerformed
         // TODO add your handling code here:
         int idx = this.gui3DRoiList.getSelectedIndex();
+        
         if(idx == -1){
             int confirm = JOptionPane.showConfirmDialog(this, "No 3D Rois is selected. Delete All ?");
             if (confirm == JOptionPane.OK_OPTION || confirm == JOptionPane.YES_OPTION){
