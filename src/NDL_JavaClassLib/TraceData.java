@@ -27,17 +27,21 @@ import javax.swing.*;
 public class TraceData extends Object{
     double[] xData = null;
     double[] yData = null;
+    
+    ArrayList<Double> XData;
+    ArrayList<Double> YData;
+    
     double x_Max = Double.MIN_VALUE;
-    double y_Max =Double.MIN_VALUE;
+    double y_Max = Double.MIN_VALUE;
     double x_Min = Double.MAX_VALUE;
     double y_Min = Double.MAX_VALUE;
     double x_Sum = 0;
     double y_Sum = 0;
     int CurrPos = 0;
     int DataLength = 0;
-    int ActLength =0;                       //Needs comment : to say what is the difference between DataLength and ActLength
-                                            // Actlength - the number of datapoints that are non zero ?
-                                            // Datalength - the capacity of the Data ie) the maximum number of data pts that can be held in the object
+    int ActLength = 0;                       //Needs comment : to say what is the difference between DataLength and ActLength
+                                             // Actlength - the number of datapoints that are non zero ?
+                                             // Datalength - the capacity of the Data ie) the maximum number of data pts that can be held in the object
     //boolean Y_Only = false;
    public TraceData( int length){
         if (length > 0){
@@ -45,12 +49,20 @@ public class TraceData extends Object{
             xData = new double[DataLength];
             yData = new double[DataLength];
         }
+        XData = new ArrayList<>();
+        YData = new ArrayList<>();
     }
    public TraceData( double[] x, double[] y){
-        if( x != null && y != null){
+        if( x != null && y != null && x.length == y.length){
             xData = (double[])x.clone();
             yData = (double[])y.clone();
             DataLength = Math.min(xData.length,yData.length);
+            int idx = 0;
+            for(double d : x){
+                XData.add(d);
+                idx++;
+                YData.add(y[idx]);
+            }
         }
     }
    public boolean addData(double x, double y){
@@ -63,6 +75,9 @@ public class TraceData extends Object{
         yData[CurrPos] = y;
         CurrPos++;
         ActLength =  CurrPos > ActLength ? CurrPos : ActLength;
+        
+        XData.add(x);
+        YData.add(y);
 
         /* Update the stat parameters: This is the only entry point of the data */
 
@@ -71,44 +86,63 @@ public class TraceData extends Object{
         return true;
     }
    public double getX(int pos){
-       if(pos < DataLength)
+       return XData.get(pos);
+       /*if(pos < DataLength)
            return xData[pos];
-       return xData[DataLength];
+       return xData[DataLength];*/
    }
    public double getY(int pos){
-      if(pos < DataLength) return yData[pos];
-      return yData[DataLength];
+      return YData.get(pos);
+       /*if(pos < DataLength) return yData[pos];
+      return yData[DataLength];*/
    }
    public double[] getXY(int pos){
        double[] XY = new double[2];
-       if (pos < DataLength){
+       XY[0] = XData.get(pos);
+       XY[1] = YData.get(pos);
+       
+      /* if (pos < DataLength){
             XY[1] = xData[pos];
             XY[2] = yData[pos];
        }
        else{
             XY[1] = xData[DataLength];
             XY[2] = yData[DataLength];
-       }
+       }*/
        return XY;
    }
    public boolean setPosition(int pos){
-       if(pos < DataLength){
+       /*if(pos < DataLength){
            CurrPos = pos;
            return true;
-       }
-     return false;
+       }*/
+       CurrPos = pos;
+     return true ;
    }
    public int getPosition(){
        return CurrPos;
    }
    public int getDataLength(){
+       DataLength = XData.size();
        return DataLength;
    }
    public double[] getX(){
-       return (double [])xData.clone();
+       double [] x = new double[XData.size()];
+       int idx = 0;
+       for(Double d : XData){
+           x[idx] = d;
+           idx++;
+       }
+       return x;
    }
    public double[] getY(){
-       return (double [])yData.clone();
+      double [] y = new double[YData.size()];
+       int idx = 0;
+       for(Double d : YData){
+           y[idx] = d;
+           idx++;
+       }
+       return y;
    }
    public double[] getX(boolean trimmed){
        return Arrays.copyOf(xData, ActLength);
@@ -130,12 +164,22 @@ public class TraceData extends Object{
         }
        return false;
    }
+   /**
+    * is deprecated
+    * This function in irrelevant in the modern day scenario. 
+    * @param length set this to Zero to reset the list.
+    */
    public void OverrideLength(int length){
-       if (length == 0){
+       XData.clear();
+       YData.clear();
+       XData.ensureCapacity(length);
+       YData.ensureCapacity(length);
+       /*if (length == 0){
            xData = null;
            yData = null;
            x_Min = y_Min = Double.MAX_VALUE;
             x_Max= y_Max = x_Sum = y_Sum = 0;
+            
            return;
        }
        DataLength = length;
@@ -144,9 +188,10 @@ public class TraceData extends Object{
        CurrPos = ActLength = 0;
        x_Min = y_Min = Double.MAX_VALUE;
        x_Max= y_Max = x_Sum = y_Sum = 0;
-       return;
+       return;*/
    }
   void  setStat(double x, double y){
+      //Seems erroneous : Doesn't seem to integrate with rest of data.
        x_Max = (x_Max > x ) ? x_Max : x ;
         y_Max = (y_Max > y ) ? y_Max : y ;
 
@@ -175,7 +220,7 @@ public class TraceData extends Object{
       if(all){
           double x =0;
           double y = 0;
-          for(int i = 0 ; i < ActLength ; i++){
+          for(int i = 0 ; i < XData.size() ; i++){
             x = getX(i);
             y = getY(i) ;
             
@@ -216,5 +261,8 @@ public class TraceData extends Object{
   public double getXPk(){
       return x_Max - x_Min;
   }
-
+  public void resetTrace(){
+    XData.clear();
+    YData.clear();
+  }
 }
