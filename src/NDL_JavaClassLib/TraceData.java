@@ -43,6 +43,14 @@ public class TraceData extends Object{
                                              // Actlength - the number of datapoints that are non zero ?
                                              // Datalength - the capacity of the Data ie) the maximum number of data pts that can be held in the object
     //boolean Y_Only = false;
+    /** Binning Data
+     * 
+     */
+    boolean binInY = true;
+    double binWnd  = 0;
+    
+    ArrayList<Double[]> BinnedData;
+    
    public TraceData( int length){
         if (length > 0){
             DataLength = length;
@@ -264,5 +272,11 @@ public class TraceData extends Object{
   public void resetTrace(){
     XData.clear();
     YData.clear();
+  }
+  /***
+   * Differentiates the trace data and generates the differential of current data
+   */
+  public void differentiate(boolean OverWrite){
+      
   }
 }
