@@ -223,10 +223,31 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
   public <X extends Number, Y extends Number> DataTrace binData(double binWidth, boolean binInX, boolean restoreSeq){
       
      DataTrace binnedData = new DataTrace();
+     this.sortData(binInX);
+     double binStart = (double)((binInX) ? rawData.get(0).getX() : rawData.get(0).getY());
+     double binEnd = binStart + binWidth;
+     double halfbinWidth = binWidth/2;
+     double binCtr = binStart + halfbinWidth;
+     double sum = 0;
+     int count = 0;
      
-     
-     
-      
+     for(OrdXYData data : rawData){
+        
+         double curX = ((double)data.getX());
+         double curY = ((double)data.getX());
+         
+         if( curX >= binStart && curX < binEnd){
+             sum += curY;
+             count++;
+         }else{
+             binnedData.addData(binCtr,(sum/count));
+             sum = curY;
+             count = 1;
+             binStart = curX;
+             binCtr = binStart + halfbinWidth;
+             binEnd = binStart + binWidth;
+         }
+     }
       
       return binnedData;
   }
