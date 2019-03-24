@@ -21,6 +21,7 @@ import ij.measure.ResultsTable;
 import ij.plugin.PlugIn;
 import ij.plugin.frame.*;*/
 import java.awt.datatransfer.*;
+import javafx.collections.transformation.SortedList;
 import javax.swing.*;
 
 
@@ -49,7 +50,7 @@ public class TraceData extends Object{
     boolean binInY = true;
     double binWnd  = 0;
     
-    ArrayList<Double[]> BinnedData;
+   // ArrayList<Double[]> BinnedData;
     
    public TraceData( int length){
         if (length > 0){
@@ -275,8 +276,47 @@ public class TraceData extends Object{
   }
   /***
    * Differentiates the trace data and generates the differential of current data
+   * will overwrite the current data with the differentiated data
    */
-  public void differentiate(boolean OverWrite){
+  public void differentiate(){
+      
       
   }
+  /**
+   * Differentiate the trace data and return the float array. 
+   * if Overwrite is true then the current data will be replaced by the differentiated data
+   * @param Overwrite
+   * @return 
+   */
+  public TraceData differentiate(boolean Overwrite){
+      TraceData difData = new TraceData(this.getDataLength());
+      //difData = null;
+      return difData;
+  }
+  
+  
+  
+  public TraceData binData(double binWidth, boolean binInX){
+      
+     throw new UnsupportedOperationException("Not yet supported yet");
+      
+      
+      
+  }
+  public TraceData sortXYData(TraceData XYData){
+      
+      
+      
+      return null;
+      
+  }
+  class compareXYData implements Comparator<ArrayList<Double[]>>{
+
+        @Override
+        public int compare(ArrayList<Double[]> t, ArrayList<Double[]> t1) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+      
+  }
+
 }
