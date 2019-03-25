@@ -128,9 +128,9 @@ public class DataBinnerGUI extends javax.swing.JDialog {
         FileReader reader = null;
         for(String name : FileNames){
             File curFile = new File(name);
-            File currentDir;
+            
             if(curFile.exists()){
-                currentDir = curFile.getParentFile();
+               
                 try {
                     reader = new FileReader(curFile);
                     
@@ -198,6 +198,7 @@ public class DataBinnerGUI extends javax.swing.JDialog {
                     Idx++;
                 }
                 dataWriter.close();
+                dataSet.clear();
             } catch (IOException ex) {
                 Logger.getLogger(DataBinnerGUI.class.getName()).log(Level.SEVERE, null, ex);
             }
