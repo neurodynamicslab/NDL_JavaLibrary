@@ -25,12 +25,12 @@ import java.sql.Array;
 import javafx.collections.transformation.SortedList;
 import javax.swing.*;
 
-class OrdXYData_1<X extends Number, Y extends Number> extends Object{
+class OrdXYData<X extends Number, Y extends Number> extends Object{
     
     int serialNo;
     X xDataPt;
     Y yDataPt;
-    public OrdXYData_1(int serial, X x, Y y){
+    public OrdXYData(int serial, X x, Y y){
         xDataPt = x;
         yDataPt = y;
         serialNo = serial; 
@@ -52,10 +52,10 @@ class OrdXYData_1<X extends Number, Y extends Number> extends Object{
     }
 }
 
-public class DataTrace extends Object{
+public class DataTrace_ver1 extends ArrayList<OrdXYData>{
     
       
-    ArrayList<OrdXYData> rawData;
+    //ArrayList<OrdXYData> rawData;
     
     
     double x_Max = Double.MIN_VALUE;
@@ -89,18 +89,18 @@ public class DataTrace extends Object{
         XData = new ArrayList<>();
         YData = new ArrayList<>();*/
     //}
-    public DataTrace(){
-        rawData = new ArrayList<OrdXYData>();
-        dataIterator = rawData.iterator();
+    public DataTrace_ver1(){
+        //rawData = new ArrayList<OrdXYData>();
+        //dataIterator = rawData.iterator();
         
     }
-   public <B extends Number>DataTrace(int datalength, B binWidth, boolean binInX){
+   public <B extends Number>DataTrace_ver1(int datalength, B binWidth, boolean binInX){
        this.binWnd = binWidth.doubleValue();
-       rawData = new ArrayList(datalength);
-       dataIterator = rawData.iterator();
+       //rawData = new ArrayList(datalength);
+       //dataIterator = rawData.iterator();
    }
    public<X extends Number,Y extends Number> void addData( X[] xData, Y[] yData){
-        this.dataIterator = rawData.iterator();
+        //this.dataIterator = rawData.iterator();
         if( xData != null && yData != null && xData.length == yData.length){          
             int idx = 0;          
             for(X x : xData){
@@ -114,30 +114,32 @@ public class DataTrace extends Object{
    public <X extends Number,Y extends Number> void addData(X xData,Y yData){  
        DataLength++;
        OrdXYData <X , Y> dataPt = new OrdXYData(DataLength,xData,yData);
-                rawData.add(dataPt);
+                this.add(dataPt);
         
     }
    
- public ArrayList getNextXYData(){
-     if (dataIterator.hasNext())
+ /*public ArrayList getNextXYData(){
+      
+     
+     /*if (dataIterator.hasNext())
         return ((OrdXYData) dataIterator.next()).getXY();
      else 
-         return null;
- }
+         return null;*/
+ //}
  
    public int getDataLength(){
-       return rawData.size();
+       return this.size();
    }
    public<N extends Number> ArrayList getX(){
        ArrayList <N> x = new ArrayList();    
-       rawData.forEach((Data) -> {
+       this.forEach((Data) -> {
            x.add((N) Data.getX());
         });
        return x;
    }
    public <N extends Number> ArrayList getY(){
       ArrayList <N> y = new ArrayList();
-       rawData.forEach((Data) -> {
+       this.forEach((Data) -> {
            y.add((N) Data.getY());
         });
        return y;
@@ -147,7 +149,7 @@ public class DataTrace extends Object{
  
    public <X extends Number, Y extends Number> void resetStat(){
 
-        rawData.forEach((Data)->{
+        this.forEach((Data)->{
             double x = ((X)Data.getX()).doubleValue();
             double y = ((Y)Data.getY()).doubleValue();
             
@@ -202,7 +204,7 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
       return x_Max - x_Min;
   }
   public void resetTrace(){
-    rawData.clear();
+    this.clear();
   }
   /***
    * Differentiates the trace data and generates the differential of current data
@@ -217,29 +219,29 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
    * @param Overwrite
    * @return 
    */
-  public DataTrace differentiate(boolean Overwrite){
-      DataTrace difData = new DataTrace();
+  public DataTrace_ver1 differentiate(boolean Overwrite){
+      DataTrace_ver1 difData = new DataTrace_ver1();
       //difData = null;
       return difData;
   }
   
   
   
-  public <X extends Number, Y extends Number> DataTrace binData(double binWidth, boolean binInX, boolean restoreSeq){
+  public <X extends Number, Y extends Number> DataTrace_ver1 binData(double binWidth, boolean binInX, boolean restoreSeq){
       
-     DataTrace binnedData = new DataTrace();
+     DataTrace_ver1 binnedData = new DataTrace_ver1();
      this.sortData(binInX);
-     double binStart = (double)((binInX) ? rawData.get(0).getX() : rawData.get(0).getY());
+     double binStart = (double)((binInX) ? this.get(0).getX() : this.get(0).getY());
      double binEnd = binStart + binWidth;
      double halfbinWidth = binWidth/2;
      double binCtr = binStart + halfbinWidth;
-     double sum = binStart;
+     double sum = (this.get(0).getY()).doubleValue();
      int count = 1;
      
-     for(OrdXYData data : rawData){
+     for(OrdXYData data : this){
         
          double curX = ((double)data.getX());
-         double curY = ((double)data.getX());
+         double curY = ((double)data.getY());
          
          if( curX >= binStart && curX < binEnd){
              sum += curY;
@@ -257,12 +259,12 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
       
       return binnedData;
   }
-  public<X extends Number, Y extends Number> DataTrace sortXYData(DataTrace XYData,boolean inX){
+  public<X extends Number, Y extends Number> DataTrace_ver1 sortXYData(DataTrace_ver1 XYData,boolean inX){
         
         X[] x = (X [])(XYData.getX().toArray());
         Y[] y = (Y [])(XYData.getY().toArray());
         
-        DataTrace sortedData = new DataTrace();
+        DataTrace_ver1 sortedData = new DataTrace_ver1();
                
         sortedData.addData(x, y);
         
@@ -272,17 +274,17 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
   private void sortData(boolean inX){
       compareXofXYData xCmp = new compareXofXYData();
       compareYofXYData yCmp = new compareYofXYData();
-      this.rawData.sort((inX) ? xCmp : yCmp);
+      this.sort((inX) ? xCmp : yCmp);
   }
   private void resetOrder(){
       compareSerialofXYData cmp = new compareSerialofXYData();
-      this.rawData.sort(cmp);
+      this.sort(cmp);
   }
   class compareXofXYData implements Comparator<OrdXYData>{
       
         @Override
         public int compare(OrdXYData t, OrdXYData t1) {
-            return (int)( t.getX().doubleValue() - t1.getX().doubleValue());
+            return Double.compare(t.getX().doubleValue(), t1.getX().doubleValue());
             //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
       
@@ -290,7 +292,7 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
   class compareYofXYData implements Comparator<OrdXYData>{
       @Override
       public int compare(OrdXYData t, OrdXYData t1) {
-            return (int)( t.getX().doubleValue() - t1.getX().doubleValue());
+            return Double.compare(t.getY().doubleValue(), t1.getY().doubleValue());
             //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
       
@@ -298,7 +300,7 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
   class compareSerialofXYData implements Comparator<OrdXYData>{
       @Override
       public int compare(OrdXYData t, OrdXYData t1){
-          return (t.getSerial() - t1.getSerial());
+          return Integer.compare(t.getSerial(), t1.getSerial());
       }
   }
 
