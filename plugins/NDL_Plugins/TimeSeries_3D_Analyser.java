@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import static java.lang.Math.sqrt;
 import static java.lang.Thread.sleep;
@@ -143,6 +144,12 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
             recenter(this.currentImp, roi, roi.getPosition());
         }
     }
+
+    private void resize3Drois() {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    }
+    
     enum  roiType{ OVAL,RECTANGLE}; 
     private roiType roiShape = roiType.OVAL;
     
@@ -266,7 +273,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        mResizeExisting = new javax.swing.JCheckBox();
         jCheckBox2 = new javax.swing.JCheckBox();
         guiSettingsOkBtn = new javax.swing.JButton();
         guiSettingsCancelBtn = new javax.swing.JButton();
@@ -306,6 +313,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
         jSep_ChkBox_Btn = new javax.swing.JSeparator();
         btnDel3DRoi = new javax.swing.JButton();
         chkBxRectrOnAdding = new javax.swing.JCheckBox();
+        btnImpXYZ = new javax.swing.JButton();
         scrlPane_3D_RoiLst = new javax.swing.JScrollPane();
         gui3DRoiList = new javax.swing.JList<>();
         scrlPane_2D_RoiLst = new javax.swing.JScrollPane();
@@ -752,7 +760,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
 
         jLabel11.setText("AutoROI Name:");
 
-        jCheckBox1.setText("Resize existing Rois");
+        mResizeExisting.setText("Resize existing Rois");
 
         jCheckBox2.setText("Apply to existing");
 
@@ -801,7 +809,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
                         .addComponent(jCheckBox2))
                     .addGroup(guiautoROIPropertiesLayout.createSequentialGroup()
                         .addGap(42, 42, 42)
-                        .addComponent(jCheckBox1)))
+                        .addComponent(mResizeExisting)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -845,7 +853,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
                     .addComponent(guiShape, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7))
                 .addGap(18, 18, 18)
-                .addComponent(jCheckBox1)
+                .addComponent(mResizeExisting)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1102,14 +1110,21 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
 
         chkBxRectrOnAdding.setText("Recenter while adding");
 
+        btnImpXYZ.setText("Import XYZ co-ord");
+        btnImpXYZ.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnImpXYZActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panel_3DBtns_ChkBoxLayout = new javax.swing.GroupLayout(panel_3DBtns_ChkBox);
         panel_3DBtns_ChkBox.setLayout(panel_3DBtns_ChkBoxLayout);
         panel_3DBtns_ChkBoxLayout.setHorizontalGroup(
             panel_3DBtns_ChkBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSep_ChkBox_Btn)
             .addGroup(panel_3DBtns_ChkBoxLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panel_3DBtns_ChkBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(panel_3DBtns_ChkBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnImpXYZ, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(panel_3DBtns_ChkBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(btnDel3DRoi, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buttonAutoRoi, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1124,15 +1139,18 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
                         .addComponent(btnGenGauInt, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnSave3DRois, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnOpen3DRois, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(panel_3DBtns_ChkBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel_3DBtns_ChkBoxLayout.createSequentialGroup()
-                            .addGap(43, 43, 43)
-                            .addGroup(panel_3DBtns_ChkBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(add2D_rad_btn)
-                                .addComponent(add3D_rad_btn)))
-                        .addComponent(AddOnClick))
-                    .addComponent(chkBxRectrOnAdding))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(chkBxRectrOnAdding)
+                    .addGroup(panel_3DBtns_ChkBoxLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(panel_3DBtns_ChkBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel_3DBtns_ChkBoxLayout.createSequentialGroup()
+                                .addGap(43, 43, 43)
+                                .addGroup(panel_3DBtns_ChkBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(add2D_rad_btn)
+                                    .addComponent(add3D_rad_btn)))
+                            .addComponent(AddOnClick))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jSep_ChkBox_Btn, javax.swing.GroupLayout.DEFAULT_SIZE, 1, Short.MAX_VALUE))
         );
 
         panel_3DBtns_ChkBoxLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnDetOverlap, btnGenGauInt, btnMeasure3D, btnRecenter3D, btnReload3DRois, btnSetBackGround, btnSetMeasurements, buttonAutoRoi, make3Dbutton, zRecenter});
@@ -1167,14 +1185,16 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
                 .addGap(1, 1, 1)
                 .addComponent(btnDel3DRoi)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSep_ChkBox_Btn, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panel_3DBtns_ChkBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSep_ChkBox_Btn, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnImpXYZ))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(AddOnClick)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(add3D_rad_btn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(add2D_rad_btn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(chkBxRectrOnAdding)
                 .addContainerGap())
         );
@@ -1219,9 +1239,9 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(panel_3DBtns_ChkBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(scrlPane_3D_RoiLst, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 86, Short.MAX_VALUE)
                         .addComponent(scrlPane_2D_RoiLst, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1253,11 +1273,9 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(panel_3DBtns_ChkBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(scrlPane_3D_RoiLst)
                     .addComponent(scrlPane_2D_RoiLst)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(panel_3DBtns_ChkBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(mv2Manager)
                         .addGap(2, 2, 2)
@@ -1278,7 +1296,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
                         .addComponent(radBtnshowRT)
                         .addGap(18, 18, 18)
                         .addComponent(ckBxRectrForMeasurement)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 182, Short.MAX_VALUE)
                         .addComponent(buttonExit, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(52, 52, 52)))
                 .addContainerGap())
@@ -1572,7 +1590,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
         this.roiHeight = Integer.parseInt(guiroiHeight.getText());
         this.roiWidth = Integer.parseInt(guiroiWidth.getText());
         this.roiDepth = Integer.parseInt(gui3DDepth.getText());
-        
+        this.mResizeExisting.isSelected();
         this.guiSettingsWindow.setVisible(false);
         
     }//GEN-LAST:event_guiSettingsOkBtnActionPerformed
@@ -1580,6 +1598,9 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
     private void guiSettingsCancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guiSettingsCancelBtnActionPerformed
         // TODO add your handling code here:
         this.guiSettingsWindow.setVisible(false);
+        if(this.mResizeExisting.isSelected())
+            resize3Drois();
+        
     }//GEN-LAST:event_guiSettingsCancelBtnActionPerformed
     private void recenterInZ(){
         
@@ -2157,6 +2178,74 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
         this.gui3DRoiList.setSelectedIndices(selIdx);
     }//GEN-LAST:event_btnReload3DRoisActionPerformed
 
+    private void btnImpXYZActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImpXYZActionPerformed
+        // TODO add your handling code here:
+        
+        File roiXYZfile;
+        boolean isZ = true;
+        String xString, yString, zString;
+        
+        float xCord, yCord, zCord;
+        
+        JFileChooser fChooser = new JFileChooser();
+        fChooser.setMultiSelectionEnabled(false);
+        int result = fChooser.showOpenDialog(this);
+        
+        FileReader reader;
+        if(result == JFileChooser.APPROVE_OPTION){
+            
+            roiXYZfile = fChooser.getSelectedFile();
+            if(roiXYZfile != null ){
+                
+                try{
+                    reader = new FileReader(roiXYZfile);
+                    int c;
+                    String xC = "", yC = "", zC = "";
+                    int  nGap = 0;
+                    while( (c = reader.read()) != -1){
+                        
+                       switch (c){
+                           case '\t':
+                               nGap = (nGap == 2 ) ? 0 : nGap + 1;
+                                   
+                           case '\n':
+                               xCord = Float.parseFloat(xC);
+                               xC = "";
+                               yCord = Float.parseFloat(yC);
+                               yC = "";
+                               zCord = Float.parseFloat(zC);
+                               zC = "";
+                               break;
+                           default:
+                               switch(nGap){
+                                   case 0:
+                                       xC += c;
+                                       break;
+                                   case 1:
+                                       yC += c;
+                                       break;
+                                   case 2: 
+                                       zC += c;
+                                       break;
+                               }
+                       }
+                        
+                    }
+                    
+                } catch(FileNotFoundException ex){
+                    System.out.print("Error opening the file " + roiXYZfile.getAbsolutePath());
+                } catch (IOException ex) {
+                    //Logger.getLogger(TimeSeries_3D_Analyser.class.getName()).log(Level.SEVERE, null, ex);
+                    System.out.print("Error reading the file " + roiXYZfile.getAbsolutePath());
+                }
+            }
+            
+        }
+        
+        
+        
+    }//GEN-LAST:event_btnImpXYZActionPerformed
+
     private void MvRois(boolean relative, boolean allRois, int xShift, int yShift, int zShift) throws HeadlessException {
         if(relative){
             
@@ -2476,6 +2565,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
     private javax.swing.JButton btnEast;
     private javax.swing.JButton btnGenGauInt;
     private javax.swing.ButtonGroup btnGrp_2D_OR_3D_addOnClk;
+    private javax.swing.JButton btnImpXYZ;
     private javax.swing.JButton btnMeasure3D;
     private javax.swing.JButton btnMove;
     private javax.swing.JButton btnNorth;
@@ -2512,7 +2602,6 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
     private javax.swing.JTextField guiroiHeight;
     private javax.swing.JTextField guiroiPrefix;
     private javax.swing.JTextField guiroiWidth;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -2528,6 +2617,7 @@ public class TimeSeries_3D_Analyser extends javax.swing.JFrame implements Runnab
     private javax.swing.JLabel jLabel9;
     private javax.swing.JSeparator jSep_ChkBox_Btn;
     private javax.swing.JLabel labelTitle;
+    private javax.swing.JCheckBox mResizeExisting;
     private javax.swing.JButton make3Dbutton;
     private javax.swing.JButton mv2Manager;
     private javax.swing.ButtonGroup object2OperateOn;
