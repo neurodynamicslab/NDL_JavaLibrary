@@ -132,7 +132,7 @@ public class MultiLevel_Threshold implements PlugIn{
              outDir = new File (dataFile.getParent() +File.pathSeparator+ "Res_Of_"+tLevels+"Seg");
              if(outDir.mkdir())
                 IJ.saveAsTiff(im,outDir+File.pathSeparator+fileName); 
-             else
+             else{
                 IJ.saveAsTiff(im,dataFile.getParent()+File.pathSeparator+fileName);
              }
              Count++;
