@@ -7,11 +7,8 @@
  *
  * @author Balaji
  */
-package NDL_JavaClassLib;
+//package NDL_JavaClassLib;
 
-import java.awt.*;
-import java.io.*;
-import java.awt.event.*;
 import java.util.*;
 /*import ij.*;
 import ij.process.*;
@@ -20,10 +17,6 @@ import ij.measure.CurveFitter;
 import ij.measure.ResultsTable;
 import ij.plugin.PlugIn;
 import ij.plugin.frame.*;*/
-import java.awt.datatransfer.*;
-import java.sql.Array;
-import javafx.collections.transformation.SortedList;
-import javax.swing.*;
 
 class OrdXYData_1<X extends Number, Y extends Number> extends Object{
     
