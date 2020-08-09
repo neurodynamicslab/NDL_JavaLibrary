@@ -9,7 +9,7 @@
  * Created on Apr 19, 2011, 4:48:42 PM
  */
 
-//package NDL_JavaClassLib;
+package NDL_JavaClassLib;
 
 import ij.ImagePlus;
 import ij.ImageStack;

@@ -7,8 +7,10 @@
  *
  * @author Balaji
  */
-package NDL_JavaClassLib;
 
+
+import static java.lang.Math.exp;
+import static java.lang.Math.pow;
 import java.util.*;
 /*import ij.*;
 import ij.process.*;
@@ -44,8 +46,83 @@ class OrdXYData<X extends Number, Y extends Number> extends Object{
         return serialNo;
     }
 }
-
-public class DataTrace_ver1 extends ArrayList<OrdXYData>{
+class OrdXYErrData< XErr extends Number, YErr extends Number, X extends Number, Y extends Number> extends OrdXYData<X,Y>{
+    //int serialNo;
+    XErr xErrorBar;
+    YErr yErrorBar;
+    boolean isSD; //SD if true and SEM if false
+    int nPts;
+    
+    public OrdXYErrData(int serial, X x, Y y, XErr xError, YErr yError, boolean SD, int NoofPoints){
+        //super.xDataPt = (Number) x;
+        //super.yDataPt = (Number) y;
+        super(serial,x,y);
+        
+        xErrorBar = xError;
+        yErrorBar = yError;
+        isSD = SD;
+        nPts = NoofPoints;
+    }
+    public OrdXYErrData(int serial, X x, Y y){
+       /* xDataPt = x;
+        yDataPt = y;
+        serialNo = serial; */
+        super(serial,x,y);
+        xErrorBar = (XErr) Integer.valueOf(-1);
+        yErrorBar = (YErr) Integer.valueOf(-1);
+        isSD = true;
+        nPts = -1;
+    }
+    @Override
+    public  X getX(){
+        return (X) super.xDataPt;
+    }
+    @Override
+    public Y getY(){
+        return (Y) yDataPt;
+    }
+    @Override
+    public ArrayList<? extends Number> getXY(){
+        ArrayList dataArray = new ArrayList(2);
+        dataArray.add(xDataPt);
+        dataArray.add(yDataPt);
+        return dataArray;
+    }
+    @Override
+    public int getSerial(){
+        return serialNo;
+    }
+    
+    public ArrayList<? extends Number> getXYErr(){
+        ArrayList dataArray = new ArrayList(4);
+        dataArray.add(xDataPt);
+        dataArray.add(yDataPt);
+        dataArray.add(xErrorBar);
+        dataArray.add(yErrorBar);
+        return dataArray;
+    }
+    
+    public  XErr getXError(){
+        return this.xErrorBar;
+    }
+    public YErr getYError(){
+        return this.yErrorBar;
+    }
+    public boolean getifSD(){
+        return isSD;
+    }
+    public boolean setifSD(boolean SD){
+        isSD = SD;
+        return isSD;
+    }
+    public int getNumberofPoints(){
+        return nPts;
+    }
+    public void setNumberofPoints(int noPoints){
+        nPts = noPoints;
+    }
+}
+public class DataTrace_ver_inwrks extends ArrayList<OrdXYErrData>{
     
       
     //ArrayList<OrdXYData> rawData;
@@ -68,6 +145,9 @@ public class DataTrace_ver1 extends ArrayList<OrdXYData>{
      */
     boolean binInY = true;
     double binWnd  = 0;
+    
+    int SCALE = 0;       //SCALE = 0 - linear, 1 - ln, 2 - log, 3 - power of 2
+
     Iterator dataIterator;
     
    // ArrayList<Double[]> BinnedData;
@@ -82,12 +162,18 @@ public class DataTrace_ver1 extends ArrayList<OrdXYData>{
         XData = new ArrayList<>();
         YData = new ArrayList<>();*/
     //}
-    public DataTrace_ver1(){
+    public void setScaleType(int stype){
+        SCALE = stype;
+    }
+    public int getScaleType(){
+        return SCALE;    //SCALE = 0 - linear, 1 - ln, 2 - log, 3 - power of 2
+    }
+    public DataTrace_ver_inwrks(){
         //rawData = new ArrayList<OrdXYData>();
         //dataIterator = rawData.iterator();
         
     }
-   public <B extends Number>DataTrace_ver1(int datalength, B binWidth, boolean binInX){
+   public <B extends Number>DataTrace_ver_inwrks(int datalength, B binWidth, boolean binInX){
        this.binWnd = binWidth.doubleValue();
        //rawData = new ArrayList(datalength);
        //dataIterator = rawData.iterator();
@@ -104,12 +190,19 @@ public class DataTrace_ver1 extends ArrayList<OrdXYData>{
         }
     }
    
-   public <X extends Number,Y extends Number> void addData(X xData,Y yData){  
+   public <X extends Number,Y extends Number, Xr extends Number, Yr extends Number> void addData(X xData,Y yData, Xr xError, Yr yError, boolean SD, int nPts){  
        DataLength++;
-       OrdXYData <X , Y> dataPt = new OrdXYData(DataLength,xData,yData);
+       OrdXYErrData dataPt = new OrdXYErrData(DataLength,xData,yData,xError,yError,SD,nPts);
                 this.add(dataPt);
         
     }
+   public <X extends Number, Y extends Number> void addData(X xData,Y yData){
+       this.addData(xData, yData, -1, -1, true,-1);
+   }
+   public <X extends Number,Y extends Number, Xr extends Number, Yr extends Number> void addData(X xData,Y yData, Xr xError, Yr yError, boolean SD){
+       
+       this.addData(xData, yData, xError, yError, SD,0);
+   }
    
  /*public ArrayList getNextXYData(){
       
@@ -137,7 +230,27 @@ public class DataTrace_ver1 extends ArrayList<OrdXYData>{
         });
        return y;
    }
-  
+   public <N extends Number> ArrayList getXErrs(){
+      ArrayList <N> Xerr = new ArrayList();
+       this.forEach((Data) -> {
+           Xerr.add((N) Data.getXError());
+        });
+       return Xerr;
+   }
+    public <N extends Number> ArrayList getYErrs(){
+      ArrayList <N> Yerr = new ArrayList();
+       this.forEach((Data) -> {
+           Yerr.add((N) Data.getYError());
+        });
+       return Yerr;
+   }
+    public  ArrayList getNpts(){
+      ArrayList <Integer> Pts = new ArrayList();
+       this.forEach((Data) -> {
+           Pts.add((Integer) Data.getNumberofPoints());
+        });
+       return Pts;
+   }
   
  
    public <X extends Number, Y extends Number> void resetStat(){
@@ -212,38 +325,61 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
    * @param Overwrite
    * @return 
    */
-  public DataTrace_ver1 differentiate(boolean Overwrite){
-      DataTrace_ver1 difData = new DataTrace_ver1();
+  public DataTrace_ver_inwrks differentiate(boolean Overwrite){
+      DataTrace_ver_inwrks difData = new DataTrace_ver_inwrks();
       //difData = null;
       return difData;
   }
   
   
   
-  public <X extends Number, Y extends Number> DataTrace_ver1 binData(double binWidth, boolean binInX, boolean restoreSeq){
-      
-     DataTrace_ver1 binnedData = new DataTrace_ver1();
+  public <X extends Number, Y extends Number, Xerr extends Number, YErr extends Number> DataTrace_ver_inwrks binData(double binWidth, boolean binInX, boolean restoreSeq){
+      //SCALE = 0 - linear, 1 - ln, 2 - log, 3 - power of 2
+     DataTrace_ver_inwrks binnedData = new DataTrace_ver_inwrks();
      this.sortData(binInX);
      double binStart = (double)((binInX) ? this.get(0).getX() : this.get(0).getY());
      double binEnd = binStart + binWidth;
      double halfbinWidth = binWidth/2;
      double binCtr = binStart + halfbinWidth;
      double sum = (this.get(0).getY()).doubleValue();
+     
+     double sumSq = sum * sum;
+     int binNumber = 1;
+     double sbinwidth = binWidth;
      int count = 1;
      
-     for(OrdXYData data : this){
+     for(OrdXYErrData data : this){
         
          double curX = ((double)data.getX());
          double curY = ((double)data.getY());
          
          if( curX >= binStart && curX < binEnd){
              sum += curY;
+             sumSq += (sum*sum);
              count++;
          }else{
              double yData = sum/count ;
-             binnedData.addData(binCtr,(sum/count));
+             double sem  = sumSq/count - (yData*yData);
+             binnedData.addData(binCtr,(sum/count),0,sem,false,count);
              sum = curY;
+             sumSq = sum * sum ;
              count = 1;
+             switch(this.SCALE){
+                 case 0:
+                     break;
+                 case 1:
+                     binWidth = exp(sbinwidth*binNumber)*(exp(sbinwidth)+1); 
+                     halfbinWidth = binWidth/2;
+                     break;
+                 case 2: 
+                     binWidth = pow(10,sbinwidth*binNumber)*(pow(10,sbinwidth)+1); 
+                     halfbinWidth = binWidth/2;
+                     break;
+                 case 3:
+                     binWidth = pow(2,sbinwidth*binNumber)*(pow(2,sbinwidth)+1); 
+                     halfbinWidth = binWidth/2;
+                     break;
+             }
              binStart = curX;
              binCtr = binStart + halfbinWidth;
              binEnd = binStart + binWidth;
@@ -252,12 +388,12 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
       
       return binnedData;
   }
-  public<X extends Number, Y extends Number> DataTrace_ver1 sortXYData(DataTrace_ver1 XYData,boolean inX){
+  public<X extends Number, Y extends Number> DataTrace_ver_inwrks sortXYData(DataTrace_ver_inwrks XYData,boolean inX){
         
         X[] x = (X [])(XYData.getX().toArray());
         Y[] y = (Y [])(XYData.getY().toArray());
         
-        DataTrace_ver1 sortedData = new DataTrace_ver1();
+        DataTrace_ver_inwrks sortedData = new DataTrace_ver_inwrks();
                
         sortedData.addData(x, y);
         
