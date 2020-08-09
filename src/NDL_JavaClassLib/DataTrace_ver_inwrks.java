@@ -8,6 +8,7 @@
  * @author Balaji
  */
 
+package NDL_JavaClassLib;
 
 import static java.lang.Math.exp;
 import static java.lang.Math.pow;
@@ -20,7 +21,7 @@ import ij.measure.ResultsTable;
 import ij.plugin.PlugIn;
 import ij.plugin.frame.*;*/
 
-class OrdXYData<X extends Number, Y extends Number> extends Object{
+/*class OrdXYData<X extends Number, Y extends Number> extends Object{
     
     int serialNo;
     X xDataPt;
@@ -45,7 +46,7 @@ class OrdXYData<X extends Number, Y extends Number> extends Object{
     public int getSerial(){
         return serialNo;
     }
-}
+}*/
 class OrdXYErrData< XErr extends Number, YErr extends Number, X extends Number, Y extends Number> extends OrdXYData<X,Y>{
     //int serialNo;
     XErr xErrorBar;
@@ -355,11 +356,11 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
          
          if( curX >= binStart && curX < binEnd){
              sum += curY;
-             sumSq += (sum*sum);
+             sumSq += (curY*curY);
              count++;
          }else{
              double yData = sum/count ;
-             double sem  = sumSq/count - (yData*yData);
+             double sem  = ((sumSq/count) - (yData*yData))/pow(count,0.5);
              binnedData.addData(binCtr,(sum/count),0,sem,false,count);
              sum = curY;
              sumSq = sum * sum ;
@@ -368,15 +369,15 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
                  case 0:
                      break;
                  case 1:
-                     binWidth = exp(sbinwidth*binNumber)*(exp(sbinwidth)+1); 
+                     binWidth = exp(sbinwidth*binNumber)*(exp(sbinwidth)-1); 
                      halfbinWidth = binWidth/2;
                      break;
                  case 2: 
-                     binWidth = pow(10,sbinwidth*binNumber)*(pow(10,sbinwidth)+1); 
+                     binWidth = pow(10,sbinwidth*binNumber)*(pow(10,sbinwidth)-1); 
                      halfbinWidth = binWidth/2;
                      break;
                  case 3:
-                     binWidth = pow(2,sbinwidth*binNumber)*(pow(2,sbinwidth)+1); 
+                     binWidth = pow(2,sbinwidth*binNumber)*(pow(2,sbinwidth)-1); 
                      halfbinWidth = binWidth/2;
                      break;
              }
