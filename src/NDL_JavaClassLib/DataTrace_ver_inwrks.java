@@ -11,6 +11,7 @@
 package NDL_JavaClassLib;
 
 import static java.lang.Math.exp;
+import static java.lang.Math.log10;
 import static java.lang.Math.pow;
 import java.util.*;
 /*import ij.*;
@@ -48,11 +49,86 @@ import ij.plugin.frame.*;*/
     }
 }*/
 class OrdXYErrData< XErr extends Number, YErr extends Number, X extends Number, Y extends Number> extends OrdXYData<X,Y>{
+
+    /**
+     * @return the isSD
+     */
+    public boolean isIsSD() {
+        return isSD;
+    }
+
+    /**
+     * @param isSD the isSD to set
+     */
+    public void setIsSD(boolean isSD) {
+        this.isSD = isSD;
+    }
+
+    /**
+     * @return the LXLimit
+     */
+    public double getLXLimit() {
+        return LXLimit;
+    }
+
+    /**
+     * @param LXLimit the LXLimit to set
+     */
+    public void setLXLimit(double LXLimit) {
+        this.LXLimit = LXLimit;
+    }
+
+    /**
+     * @return the LYLimit
+     */
+    public double getLYLimit() {
+        return LYLimit;
+    }
+
+    /**
+     * @param LYLimit the LYLimit to set
+     */
+    public void setLYLimit(double LYLimit) {
+        this.LYLimit = LYLimit;
+    }
+
+    /**
+     * @return the HXLimit
+     */
+    public double getHXLimit() {
+        return HXLimit;
+    }
+
+    /**
+     * @param HXLimit the HXLimit to set
+     */
+    public void setHXLimit(double HXLimit) {
+        this.HXLimit = HXLimit;
+    }
+
+    /**
+     * @return the HYLimit
+     */
+    public double getHYLimit() {
+        return HYLimit;
+    }
+
+    /**
+     * @param HYLimit the HYLimit to set
+     */
+    public void setHYLimit(double HYLimit) {
+        this.HYLimit = HYLimit;
+    }
     //int serialNo;
     XErr xErrorBar;
     YErr yErrorBar;
-    boolean isSD; //SD if true and SEM if false
+    private boolean isSD; //SD if true and SEM if false
     int nPts;
+    private double LXLimit = Double.MIN_VALUE;
+    private double LYLimit = Double.MIN_VALUE;
+    private double HXLimit = Double.MAX_VALUE;
+    private double HYLimit = Double.MAX_VALUE;
+    
     
     public OrdXYErrData(int serial, X x, Y y, XErr xError, YErr yError, boolean SD, int NoofPoints){
         //super.xDataPt = (Number) x;
@@ -110,11 +186,11 @@ class OrdXYErrData< XErr extends Number, YErr extends Number, X extends Number, 
         return this.yErrorBar;
     }
     public boolean getifSD(){
-        return isSD;
+        return isIsSD();
     }
     public boolean setifSD(boolean SD){
-        isSD = SD;
-        return isSD;
+        setIsSD(SD);
+        return isIsSD();
     }
     public int getNumberofPoints(){
         return nPts;
@@ -124,6 +200,90 @@ class OrdXYErrData< XErr extends Number, YErr extends Number, X extends Number, 
     }
 }
 public class DataTrace_ver_inwrks extends ArrayList<OrdXYErrData>{
+
+    /**
+     * @return the xRoundoff
+     */
+    public boolean isxRoundoff() {
+        return xRoundoff;
+    }
+
+    /**
+     * @param xRoundoff the xRoundoff to set
+     */
+    public void setxRoundoff(boolean xRoundoff) {
+        this.xRoundoff = xRoundoff;
+    }
+
+    /**
+     * @return the yRoundoff
+     */
+    public boolean isyRoundoff() {
+        return yRoundoff;
+    }
+
+    /**
+     * @param yRoundoff the yRoundoff to set
+     */
+    public void setyRoundoff(boolean yRoundoff) {
+        this.yRoundoff = yRoundoff;
+    }
+
+    /**
+     * @return the LXLimit
+     */
+    public double getLXLimit() {
+        return LXLimit;
+    }
+
+    /**
+     * @param LXLimit the LXLimit to set
+     */
+    public void setLXLimit(double LXLimit) {
+        this.LXLimit = LXLimit;
+    }
+
+    /**
+     * @return the LYLimit
+     */
+    public double getLYLimit() {
+        return LYLimit;
+    }
+
+    /**
+     * @param LYLimit the LYLimit to set
+     */
+    public void setLYLimit(double LYLimit) {
+        this.LYLimit = LYLimit;
+    }
+
+    /**
+     * @return the HXLimit
+     */
+    public double getHXLimit() {
+        return HXLimit;
+    }
+
+    /**
+     * @param HXLimit the HXLimit to set
+     */
+    public void setHXLimit(double HXLimit) {
+        this.HXLimit = HXLimit;
+    }
+
+    /**
+     * @return the HYLimit
+     */
+    public double getHYLimit() {
+        return HYLimit;
+    }
+
+    /**
+     * @param HYLimit the HYLimit to set
+     */
+    public void setHYLimit(double HYLimit) {
+        this.HYLimit = HYLimit;
+    }
     
       
     //ArrayList<OrdXYData> rawData;
@@ -141,6 +301,14 @@ public class DataTrace_ver_inwrks extends ArrayList<OrdXYErrData>{
                                              // Actlength - the number of datapoints that are non zero ?
                                              // Datalength - the capacity of the Data ie) the maximum number of data pts that can be held in the object
     //boolean Y_Only = false;
+    private boolean xRoundoff = true;
+    private boolean yRoundoff = true;
+    private double LXLimit = Double.MIN_VALUE;
+    private double LYLimit = Double.MIN_VALUE;
+    private double HXLimit = Double.MAX_VALUE;
+    private double HYLimit = Double.MAX_VALUE;
+    
+    
     /** Binning Data
      * 
      */
@@ -150,6 +318,8 @@ public class DataTrace_ver_inwrks extends ArrayList<OrdXYErrData>{
     int SCALE = 0;       //SCALE = 0 - linear, 1 - ln, 2 - log, 3 - power of 2
 
     Iterator dataIterator;
+    
+    
     
    // ArrayList<Double[]> BinnedData;
     
@@ -338,21 +508,58 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
       //SCALE = 0 - linear, 1 - ln, 2 - log, 3 - power of 2
      DataTrace_ver_inwrks binnedData = new DataTrace_ver_inwrks();
      this.sortData(binInX);
-     double binStart = (double)((binInX) ? this.get(0).getX() : this.get(0).getY());
-     double binEnd = binStart + binWidth;
+     int binNumber = 1;
+     double sbinwidth = binWidth;
      double halfbinWidth = binWidth/2;
+     double binStart = (double)((binInX) ? this.get(0).getX() : this.get(0).getY());
+     
+    /* switch(this.SCALE){
+                 case 0:
+                     break;
+                 case 1:
+                     binWidth = exp(sbinwidth*binNumber)*(exp(sbinwidth)-1); 
+                     halfbinWidth = binWidth/2;
+                     break;
+                 case 2: 
+                     binWidth = pow(10,sbinwidth*binNumber)*(pow(10,sbinwidth)-1); 
+                     halfbinWidth = binWidth/2;
+                     break;
+                 case 3:
+                     binWidth = pow(2,sbinwidth*binNumber)*(pow(2,sbinwidth)-1); 
+                     halfbinWidth = binWidth/2;
+                     break;
+                 case 4:
+                     binWidth = (binStart/binWidth);
+                     System.out.print( "\t binwidths =" + binWidth);
+                     halfbinWidth = binWidth/2;
+                     break;
+             }
+     
+     */
+     
+     
+     double binEnd = binStart + binWidth;
+     
      double binCtr = binStart + halfbinWidth;
      double sum = (this.get(0).getY()).doubleValue();
      
      double sumSq = sum * sum;
-     int binNumber = 1;
-     double sbinwidth = binWidth;
+     
      int count = 1;
      
      for(OrdXYErrData data : this){
         
          double curX = ((double)data.getX());
          double curY = ((double)data.getY());
+         if(curX <= this.getLXLimit()  || curY <= this.getLYLimit() ){
+           if( isxRoundoff() || isyRoundoff()){
+             if(curX <= this.getLXLimit() ) curX = 0;
+             if(curY <= this.getLYLimit()) curY = 0;
+           }   
+           else
+               continue;   
+         }
+            
          
          if( curX >= binStart && curX < binEnd){
              sum += curY;
@@ -360,7 +567,7 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
              count++;
          }else{
              double yData = sum/count ;
-             double sem  = ((sumSq/count) - (yData*yData))/pow(count,0.5);
+             double sem  = pow((sumSq/count) - (yData*yData), 0.5)/pow(count,0.5);
              binnedData.addData(binCtr,(sum/count),0,sem,false,count);
              sum = curY;
              sumSq = sum * sum ;
@@ -380,6 +587,7 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
                      binWidth = pow(2,sbinwidth*binNumber)*(pow(2,sbinwidth)-1); 
                      halfbinWidth = binWidth/2;
                      break;
+                 
              }
              binStart = curX;
              binCtr = binStart + halfbinWidth;
