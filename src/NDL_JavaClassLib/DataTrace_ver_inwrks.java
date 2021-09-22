@@ -54,7 +54,7 @@ class OrdXYErrData< XErr extends Number, YErr extends Number, X extends Number, 
      * @return the isSD
      */
     public boolean isIsSD() {
-        int as = 1;
+        int as = 2;
         return isSD;
         }
 
