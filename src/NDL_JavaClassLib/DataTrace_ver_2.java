@@ -48,7 +48,7 @@ import ij.plugin.frame.*;*/
         return serialNo;
     }
 }*/
-class OrdXYErrData< XErr extends Number, YErr extends Number, X extends Number, Y extends Number> extends OrdXYData<X,Y>{
+class OrdXYErrData_inVer2< XErr extends Number, YErr extends Number, X extends Number, Y extends Number> extends OrdXYData<X,Y>{
 
     /**
      * @return the isSD
@@ -130,7 +130,7 @@ class OrdXYErrData< XErr extends Number, YErr extends Number, X extends Number, 
     private double HYLimit = Double.MAX_VALUE;
     
     
-    public OrdXYErrData(int serial, X x, Y y, XErr xError, YErr yError, boolean SD, int NoofPoints){
+    public OrdXYErrData_inVer2(int serial, X x, Y y, XErr xError, YErr yError, boolean SD, int NoofPoints){
         //super.xDataPt = (Number) x;
         //super.yDataPt = (Number) y;
         super(serial,x,y);
@@ -140,7 +140,7 @@ class OrdXYErrData< XErr extends Number, YErr extends Number, X extends Number, 
         isSD = SD;
         nPts = NoofPoints;
     }
-    public OrdXYErrData(int serial, X x, Y y){
+    public OrdXYErrData_inVer2(int serial, X x, Y y){
        /* xDataPt = x;
         yDataPt = y;
         serialNo = serial; */
@@ -199,7 +199,7 @@ class OrdXYErrData< XErr extends Number, YErr extends Number, X extends Number, 
         nPts = noPoints;
     }
 }
-public class DataTrace_ver_2 extends ArrayList<OrdXYErrData>{
+public class DataTrace_ver_2 extends ArrayList<OrdXYErrData_inVer2>{
 
     /**
      * @return the xRoundoff
@@ -363,7 +363,7 @@ public class DataTrace_ver_2 extends ArrayList<OrdXYErrData>{
    
    public <X extends Number,Y extends Number, Xr extends Number, Yr extends Number> void addData(X xData,Y yData, Xr xError, Yr yError, boolean SD, int nPts){  
        DataLength++;
-       OrdXYErrData dataPt = new OrdXYErrData(DataLength,xData,yData,xError,yError,SD,nPts);
+       OrdXYErrData_inVer2 dataPt = new OrdXYErrData_inVer2(DataLength,xData,yData,xError,yError,SD,nPts);
                 this.add(dataPt);
         
     }
@@ -557,7 +557,7 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
      
      int count = 1;
      
-     for(OrdXYErrData data : this){
+     for(OrdXYErrData_inVer2 data : this){
         
          double curX = ((double)data.getX());
          double curY = ((double)data.getY());

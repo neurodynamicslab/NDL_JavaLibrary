@@ -3,7 +3,9 @@
  * and open the template in the editor.
  */
 
-/**
+/**Edited on 27th Apr2022, BJ
+ * A class for storing X, Y data along with error bars. The class is defined using java generics so that it can accept any numeric such as byte,int,long float or double 
+ * as input data. This class is written as an extension to OrdXYData which stores just the data without error bars.
  *
  * @author Balaji
  */
@@ -50,29 +52,30 @@ import ij.plugin.frame.*;*/
 }*/
 class OrdXYErrData< XErr extends Number, YErr extends Number, X extends Number, Y extends Number> extends OrdXYData<X,Y>{
 
-    /**
+    /** Checks for the flag setting to determine if the error bar is standard deviation
+     * Note: This flag needs to be set by the user during the data input stage.
      * @return the isSD
      */
     public boolean isIsSD() {
-        int as = 2;
         return isSD;
         }
 
-    /**
+    /**Set the flag to determine if the error bar in the present in this data is standard deviation(true) or standard error(false).
      * @param isSD the isSD to set
      */
     public void setIsSD(boolean isSD) {
         this.isSD = isSD;
     }
 
-    /**
+    /**Returns the lowest value that can be stored in X data
+     * 
      * @return the LXLimit
      */
     public double getLXLimit() {
         return LXLimit;
     }
 
-    /**
+    /**Sets the lowest value that can be stored in X data. Default is Double.MINVALUE
      * @param LXLimit the LXLimit to set
      */
     public void setLXLimit(double LXLimit) {
@@ -80,13 +83,14 @@ class OrdXYErrData< XErr extends Number, YErr extends Number, X extends Number, 
     }
 
     /**
+     * Returns the lowest value that can be stored in Y data
      * @return the LYLimit
      */
     public double getLYLimit() {
         return LYLimit;
     }
 
-    /**
+    /**Sets the lowest value that can be stored in Y data. Default is Double.MINVALUE
      * @param LYLimit the LYLimit to set
      */
     public void setLYLimit(double LYLimit) {
@@ -94,6 +98,7 @@ class OrdXYErrData< XErr extends Number, YErr extends Number, X extends Number, 
     }
 
     /**
+     * Returns the highest value that can be stored in X data. 
      * @return the HXLimit
      */
     public double getHXLimit() {
@@ -101,6 +106,7 @@ class OrdXYErrData< XErr extends Number, YErr extends Number, X extends Number, 
     }
 
     /**
+     * Sets the highest value that can be stored in X data. Default is Double.MAXVALUE
      * @param HXLimit the HXLimit to set
      */
     public void setHXLimit(double HXLimit) {
@@ -108,6 +114,7 @@ class OrdXYErrData< XErr extends Number, YErr extends Number, X extends Number, 
     }
 
     /**
+     * Returns the highest value that can be stored in X data. 
      * @return the HYLimit
      */
     public double getHYLimit() {
@@ -115,6 +122,7 @@ class OrdXYErrData< XErr extends Number, YErr extends Number, X extends Number, 
     }
 
     /**
+     * Sets the highest value that can be stored in X data. Default is Double.MAXVALUE
      * @param HYLimit the HYLimit to set
      */
     public void setHYLimit(double HYLimit) {
@@ -500,6 +508,24 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
   public DataTrace_ver_inwrks differentiate(boolean Overwrite){
       DataTrace_ver_inwrks difData = new DataTrace_ver_inwrks();
       //difData = null;
+     double prevY = 0.0, currY ;
+     double prevX = 0.0, currX ;
+     for(OrdXYErrData data : this){
+         currY = (double) data.getY();
+         currX = (double) data.getX();
+         double diffY = currY - prevY;
+         double diffX = currX - prevX;
+         difData.addData(diffX, diffY);               //At presnt the error bars are not propagated
+         prevY = currY;
+         prevX = currX;
+     }
+     if(Overwrite){
+         this.clear();
+         difData.forEach((data) -> {
+             this.addData(data.getX(), data.getY());
+          });
+         
+     }
       return difData;
   }
   
