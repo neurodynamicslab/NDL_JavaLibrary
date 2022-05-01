@@ -6,7 +6,7 @@
 /**Edited on 27th Apr2022, BJ
  * A class for storing X, Y data along with error bars. The class is defined using java generics so that it can accept any numeric such as byte,int,long float or double 
  * as input data. This class is written as an extension to OrdXYData which stores just the data without error bars.
- *
+ * on 01st May, 2022 BJ: Added method to return the array of X values or y values
  * @author Balaji
  */
 
@@ -20,6 +20,9 @@ import java.util.*;
 import ij.process.*;
 import ij.gui.*;
 import ij.measure.CurveFitter;
+import static java.lang.Math.log10;
+import static java.lang.Math.pow;
+import java.util.*;
 import ij.measure.ResultsTable;
 import ij.plugin.PlugIn;
 import ij.plugin.frame.*;*/
@@ -138,16 +141,42 @@ class OrdXYErrData< XErr extends Number, YErr extends Number, X extends Number, 
     private double HXLimit = Double.MAX_VALUE;
     private double HYLimit = Double.MAX_VALUE;
     
-    
+    /**
+     * 
+     * @param serial : Serial number of the data point. Can be used to restore the order of data points to the input after sorting.
+     *                 for instance one might sort on y values then and perform the desired operation on the data set and then sort on
+     *                  serial number to restore to the input order. 
+     * @param x      : x value it can be any of data type sub classed from Number
+     * @param y      : y value  it can be any of data type sub classed from Number
+     * @param xError    : value of error in x axis typically it is either standard deviation or standard error. Data type is one of the sub
+     *                    classes of Number
+     * @param yError  : value of error in x axis typically it is either standard deviation or standard error. Data type is one of the sub
+     *                    classes of Number
+     * @param SD      : Boolean for if the error bar is SD (True). False would mean the error bar is SEM
+     * @param NoofPoints : Number of data points used to arrive at the SD or SE for this particular point. 
+     *                     It is assumed that number of points averaged to arrive at error bar is same for X and Y.
+     */
     public OrdXYErrData(int serial, X x, Y y, XErr xError, YErr yError, boolean SD, int NoofPoints){
         //super.xDataPt = (Number) x;
         //super.yDataPt = (Number) y;
         super(serial,x,y);
-        
-        xErrorBar = xError;
+        /**
+         * @ xErrorBar yErrorBar
+         * The value of the error bar for x axis and y axis
+         */
+        xErrorBar = xError;                         
         yErrorBar = yError;
-        isSD = SD;
-        nPts = NoofPoints;
+        /**
+         * @isSD 
+         * True if the error bar is standard deviation false if it is standard error of the mean.
+         */
+        isSD = SD;          
+        /** 
+         * @nPts 
+         * Number of data points used to arrive at the SD or SE for this particular point. 
+         * It is assumed that number of points averaged to arrive at error bar is same for X and Y.
+        */
+        nPts = NoofPoints;                  
     }
     public OrdXYErrData(int serial, X x, Y y){
        /* xDataPt = x;
@@ -187,27 +216,63 @@ class OrdXYErrData< XErr extends Number, YErr extends Number, X extends Number, 
         dataArray.add(yErrorBar);
         return dataArray;
     }
-    
+    /**
+     * 
+     * @return  X errorBar value co-responding to this data point
+     */
     public  XErr getXError(){
         return this.xErrorBar;
     }
+    /**
+     * 
+     * @return Y errorBar value co-responding to this data point
+     */
     public YErr getYError(){
         return this.yErrorBar;
     }
+    /**
+     * 
+     * @return true if the error bar is SD false if SEM (This is set by the user at the time of initialization.
+     */
     public boolean getifSD(){
         return isIsSD();
     }
+    /**
+     * 
+     * @param SD call it with True to interpret the error bar at SD False for interpreting it as SEM. 
+     *        This is assumed to be same for Y and X error bar.
+     * Note : It is not calculated by the class or any members of this class (You can not do that as all you have is 'a' value for 
+     * X, 'a' value for Y.
+     * @return 
+     */
     public boolean setifSD(boolean SD){
         setIsSD(SD);
         return isIsSD();
     }
+    /**
+     * Use this function to get the number points that is used to average and get the X and Y mean and error bar associated with it. 
+     * Use the return value to calculate SEM from SD or vice versa. 
+     * @return 
+     */
+    
     public int getNumberofPoints(){
         return nPts;
     }
+    /**
+     * Use this function to set the number points that is used to average and get the X and Y mean and error bar associated with it. 
+     *@param npPoints : number of points over which the error bar is calculated. Provided to go from SD to SEM and vice versa. 
+     */
+    
     public void setNumberofPoints(int noPoints){
         nPts = noPoints;
     }
 }
+/**
+ * This class built around arrayList to mimic a container class with x - axis and y - axis values along with 
+ * Error bars. Elements of the list are objects of the class OrdXYErrData. The class can be used to perform basic operations
+ * of binning, derivative and adjacent averaging (yet to be implemented as 01st May, 2022). 
+ * @author balam
+ */
 public class DataTrace_ver_inwrks extends ArrayList<OrdXYErrData>{
 
     /**
