@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * @author balam
  */
 
-class OrdXYErrData< XErr extends Number, YErr extends Number, X extends Number, Y extends Number> extends OrdXYData<X,Y>{
+public class OrdXYErrData< XErr extends Number, YErr extends Number, X extends Number, Y extends Number> extends OrdXYData<X,Y>{
 
     /** Checks for the flag setting to determine if the error bar is standard deviation
      * Note: This flag needs to be set by the user during the data input stage.

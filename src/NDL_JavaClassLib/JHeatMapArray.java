@@ -4,6 +4,9 @@
  * and open the template in the editor.
  */
 package NDL_JavaClassLib;
+
+import java.util.ArrayList;
+
 /**
  * Class to hold, initialize and create heat map pixel array from  time series XY data. 
  * @author balam
@@ -84,12 +87,37 @@ public class JHeatMapArray extends Object{
         
         pixelArray = new double[xRes][yRes];
         
-        
+        ArrayList<Double> xPosi, yPosi;
+        xPosi = timeSeries.getX();
+        yPosi = timeSeries.getY();
+        int Idx = 0;
+        int x,y;
+        for(Double xDouble : xPosi){
+            
+            Double yDouble = yPosi.get(Idx);
+            x = (int)Math.round(xDouble);
+            y = (int)Math.round(yDouble);
+            
+            pixelArray [x][y] += 1;
+            Idx++;
+        }
         
     }
     public void convertTimeSeriestoArray(){
         this.timeSeries.resetStat();
         this.convertTimeSeriestoArray( Math.round((float)(timeSeries.getXMax()-timeSeries.getXMin()))
                                         ,Math.round((float)(timeSeries.getYMax()-timeSeries.getYMin())));
+    }
+    public double [] to1DArray(){
+        double [] OneD = new double[xRes*yRes];
+        int xIdx = 0, yIdx = 0;
+        for(double [] y : pixelArray){
+            for(double val : y){
+                OneD[xIdx + (yIdx*xRes)] = val;
+                xIdx++;
+            }
+            yIdx++;
+        }
+        return OneD;
     }
 }

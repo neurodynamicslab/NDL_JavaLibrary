@@ -11,7 +11,7 @@ import java.util.ArrayList;
  *
  * @author balam
  */
-class OrdXYData<X extends Number, Y extends Number> extends Object{
+public class OrdXYData<X extends Number, Y extends Number> extends Object{
     
     int serialNo;
     X xDataPt;

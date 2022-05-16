@@ -455,17 +455,19 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
     this.clear();
   }
   /***
-   * Differentiates the trace data and generates the differential of current data
-   * will overwrite the current data with the differentiated data
+   * Differentiates the trace data and generates the differential of current data.
+   * This function will overwrite the current data with the differentiated data
    */
   public void differentiate(){
       differentiate(true);
   }
+  
+  
   /**
    * Differentiate the trace data and return the float array. 
-   * if Overwrite is true then the current data will be replaced by the differentiated data
+   * If Overwrite is true then the current data will be replaced by the differentiated data
    * @param Overwrite
-   * @return 
+   * @return  returns the differentiated data as DataTrace_ver_3 object.
    */
   public DataTrace_ver_3 differentiate(boolean Overwrite){
       DataTrace_ver_3 difData = new DataTrace_ver_3();
