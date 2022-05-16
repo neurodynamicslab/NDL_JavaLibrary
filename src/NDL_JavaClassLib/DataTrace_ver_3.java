@@ -60,13 +60,14 @@ import ij.plugin.frame.*;*/
         return serialNo;
     }
 }*/
+
 /**
  * This class built around arrayList to mimic a container class with x - axis and y - axis values along with 
  * Error bars. Elements of the list are objects of the class OrdXYErrData. The class can be used to perform basic operations
  * of binning, derivative and adjacent averaging (yet to be implemented as 01st May, 2022). 
  * @author balam
  */
-public class DataTrace_ver_inwrks extends ArrayList<OrdXYErrData>{
+public class DataTrace_ver_3 extends ArrayList<OrdXYErrData>{
 
     /**
      * Call this function to read the data directly from text file.The data is supposed to be in the format of x and y co-ordinates listed in a time series stored as text(ascii) file.(i.e.x1 \t y1 \n x2 \t y2\n....EOF).x1,y1 co -respond to co-ordinates at time t1, x2, y2 at time t2.
@@ -309,12 +310,12 @@ public class DataTrace_ver_inwrks extends ArrayList<OrdXYErrData>{
     public int getScaleType(){
         return SCALE;    //SCALE = 0 - linear, 1 - ln, 2 - log, 3 - power of 2
     }
-    public DataTrace_ver_inwrks(){
+    public DataTrace_ver_3(){
         //rawData = new ArrayList<OrdXYData>();
         //dataIterator = rawData.iterator();
         
     }
-   public <B extends Number>DataTrace_ver_inwrks(int datalength, B binWidth, boolean binInX){
+   public <B extends Number>DataTrace_ver_3(int datalength, B binWidth, boolean binInX){
        this.binWnd = binWidth.doubleValue();
        //rawData = new ArrayList(datalength);
        //dataIterator = rawData.iterator();
@@ -466,8 +467,8 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
    * @param Overwrite
    * @return 
    */
-  public DataTrace_ver_inwrks differentiate(boolean Overwrite){
-      DataTrace_ver_inwrks difData = new DataTrace_ver_inwrks();
+  public DataTrace_ver_3 differentiate(boolean Overwrite){
+      DataTrace_ver_3 difData = new DataTrace_ver_3();
       //difData = null;
      double prevY = 0.0, currY ;
      double prevX = 0.0, currX ;
@@ -492,9 +493,9 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
   
   
   
-  public <X extends Number, Y extends Number, Xerr extends Number, YErr extends Number> DataTrace_ver_inwrks binData(double binWidth, boolean binInX, boolean restoreSeq){
+  public <X extends Number, Y extends Number, Xerr extends Number, YErr extends Number> DataTrace_ver_3 binData(double binWidth, boolean binInX, boolean restoreSeq){
       //SCALE = 0 - linear, 1 - ln, 2 - log, 3 - power of 2
-     DataTrace_ver_inwrks binnedData = new DataTrace_ver_inwrks();
+     DataTrace_ver_3 binnedData = new DataTrace_ver_3();
      this.sortData(binInX);
      int binNumber = 1;
      double sbinwidth = binWidth;
@@ -585,12 +586,12 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
       
       return binnedData;
   }
-  public<X extends Number, Y extends Number> DataTrace_ver_inwrks sortXYData(DataTrace_ver_inwrks XYData,boolean inX){
+  public<X extends Number, Y extends Number> DataTrace_ver_3 sortXYData(DataTrace_ver_inwrks XYData,boolean inX){
         
         X[] x = (X [])(XYData.getX().toArray());
         Y[] y = (Y [])(XYData.getY().toArray());
         
-        DataTrace_ver_inwrks sortedData = new DataTrace_ver_inwrks();
+        DataTrace_ver_3 sortedData = new DataTrace_ver_3();
                
         sortedData.addData(x, y);
         
