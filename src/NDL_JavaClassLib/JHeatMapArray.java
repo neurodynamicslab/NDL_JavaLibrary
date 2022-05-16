@@ -108,6 +108,13 @@ public class JHeatMapArray extends Object{
         this.convertTimeSeriestoArray( Math.round((float)(timeSeries.getXMax()-timeSeries.getXMin()))
                                         ,Math.round((float)(timeSeries.getYMax()-timeSeries.getYMin())));
     }
+    /***
+     * Method to convert two dimensional pixel array to linear 1D array.They are useful during
+     * creation of images using ImageJ. Make sure to call convertTimeSeriestoArray()before calling
+     * this function. The sequence of steps should be initialize the time series data, convertTimeSeriestoArray()
+     * and then convert it to 1D array (linear array).
+     * @return : returns a linear double array with xRes x yRes elements. 
+     */
     public double [] to1DArray(){
         double [] OneD = new double[xRes*yRes];
         int xIdx = 0, yIdx = 0;
