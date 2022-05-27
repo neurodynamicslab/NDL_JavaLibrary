@@ -55,10 +55,6 @@ public class JHeatMapArray extends Object{
         this.timeSeries = timeSeries;
     }
 
-
-
-
-
     /**
      * @return the pixelArray
      */
@@ -97,8 +93,8 @@ public class JHeatMapArray extends Object{
             Double yDouble = yPosi.get(Idx);
             x = (int)Math.round(xDouble);
             y = (int)Math.round(yDouble);
-            
-            pixelArray [x][y] += 1;
+            if(x <= xRes && y <= yRes && x >= 0 && y >= 0)
+                pixelArray [x][y] += 1;
             Idx++;
         }
         
