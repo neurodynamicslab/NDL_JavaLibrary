@@ -358,6 +358,7 @@ public class DataTrace_ver_3 extends ArrayList<OrdXYErrData>{
    public int getDataLength(){
        return this.size();
    }
+   
    public<N extends Number> ArrayList getX(){
        ArrayList <N> x = new ArrayList();    
        this.forEach((Data) -> {
@@ -464,7 +465,7 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
   
   
   /**
-   * Differentiate the trace data and return the float array. 
+   * Differentiates the trace data and returns the new DataTrace object containing differentiated data. . 
    * If Overwrite is true then the current data will be replaced by the differentiated data
    * @param Overwrite
    * @return  returns the differentiated data as DataTrace_ver_3 object.

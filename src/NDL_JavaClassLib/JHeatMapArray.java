@@ -74,6 +74,11 @@ public class JHeatMapArray extends Object{
     private double [][] pixelArray;
     private DataTrace_ver_3 timeSeries;
     
+    /**
+     *
+     * @param xRes
+     * @param yRes
+     */
     public JHeatMapArray(int xRes, int yRes){
         this.setxRes(xRes);
         this.setyRes(yRes);

@@ -53,7 +53,7 @@ public class JVectorSpace {
     }
     return pixels;
     }
- JVectorSpace (int xRes, int yRes){
+ public JVectorSpace (int xRes, int yRes){
      this.xRes = xRes;
      this.yRes = yRes;
      this.xMax = this.yMax = 0;
@@ -61,19 +61,19 @@ public class JVectorSpace {
      space = null;
      vectors = null;
  } 
- JVectorSpace(int xRes, int yRes, boolean resAuto, OrdXYData[] space,JVector[] vectors ){
+ public JVectorSpace(int xRes, int yRes, boolean resAuto, OrdXYData[] spaceArray,JVector[] vectorArray ){
      this.xRes = xRes;
      this.yRes = yRes;
      this.xMax = this.yMax = 0;
      resMismatch = false;
      
-     if(space.length != vectors.length || space.length == 0){
+     if(spaceArray.length != vectorArray.length || spaceArray.length == 0){
          space = null;
          vectors = null;
      }else{
          int Idx = 0;
-         for(OrdXYData coord : space){
-             addVector(coord,vectors[Idx],resAuto);
+         for(OrdXYData coord : spaceArray){
+             addVector(coord,vectorArray[Idx],resAuto);
              Idx++;
          }
      }
@@ -96,5 +96,51 @@ public class JVectorSpace {
      space.add(coordinates);
      vectors.add(vector);
  }
-    
+ public void fillSpace(ArrayList<OrdXYData> coordLst,ArrayList<JVector>vectorLst,boolean resAuto){
+     
+     if(coordLst.isEmpty() || (vectorLst.size() != coordLst.size())){
+         space = null;
+         vectors = null;
+     }else{
+         int Idx = 0;
+         for(OrdXYData coord : coordLst){
+             addVector(coord,vectorLst.get(Idx),resAuto);
+             Idx++;
+         }
+     }
+     
+ }
+ public void fillSpace(OrdXYData[] spaceArray,JVector[] vectorArray,boolean resAuto){
+     
+     if(spaceArray.length != vectorArray.length || spaceArray.length == 0){
+         space = null;
+         vectors = null;
+     }else{
+         int Idx = 0;
+         for(OrdXYData coord : spaceArray){
+             addVector(coord,vectorArray[Idx],resAuto);
+             Idx++;
+         }
+     }
+ 
+ }
+ 
+ public JVectorSpace(int xRes, int yRes,boolean resAuto, ArrayList<OrdXYData> coordLst,ArrayList<JVector> vectorLst ){
+   
+     this.xRes = xRes;
+     this.yRes = yRes;
+     this.xMax = this.yMax = 0;
+     resMismatch = false;
+     
+     if(coordLst.isEmpty() || (vectorLst.size() != coordLst.size())){
+         space = null;
+         vectors = null;
+     }else{
+         int Idx = 0;
+         for(OrdXYData coord : coordLst){
+             addVector(coord,vectorLst.get(Idx),resAuto);
+             Idx++;
+         }
+     }
+ }
 }
