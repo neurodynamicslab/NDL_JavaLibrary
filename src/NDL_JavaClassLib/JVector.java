@@ -15,12 +15,18 @@ import java.util.ArrayList;
 public class JVector<N extends Number> {
     
     ArrayList<N> Components;
-    JVector(N [] C){
+    public JVector(N [] C){
         for(N c : C)
             Components.add(c);
     }
-   
-
+   public JVector(ArrayList<N> C){
+       for(N c : C)
+            Components.add(c);
+   }
+   public void addVectors(ArrayList<N> C){
+       for(N c : C)
+            Components.add(c);
+   }
     /**
      * @return the normsReady
      */
