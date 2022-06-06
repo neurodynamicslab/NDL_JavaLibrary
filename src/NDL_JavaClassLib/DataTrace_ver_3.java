@@ -288,7 +288,7 @@ public class DataTrace_ver_3 extends ArrayList<OrdXYErrData>{
     
     int SCALE = 0;       //SCALE = 0 - linear, 1 - ln, 2 - log, 3 - power of 2
 
-    Iterator dataIterator;
+    //Iterator dataIterator;
     
     
     

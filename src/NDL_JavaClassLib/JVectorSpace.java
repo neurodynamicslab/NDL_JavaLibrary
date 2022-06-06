@@ -13,41 +13,139 @@ import java.util.ArrayList;
  * @author balam
  */
 public class JVectorSpace {
+
+    /**
+     * @param nComp the nComp to set
+     */
+    private void setnComp(int nComp) {
+        this.nComp = nComp;
+    }
+
+    /**
+     * @return the nComp
+     */
+    public int getnComp() {
+        return nComp;
+    }
+
+    /**
+     * @return the space
+     */
+    public ArrayList<OrdXYData> getSpace() {
+        return space;
+    }
+
+    /**
+     * @return the vectors
+     */
+    public ArrayList<JVector> getVectors() {
+        return vectors;
+    }
+
+    /**
+     * @return the xRes
+     */
+    public int getxRes() {
+        return xRes;
+    }
+
+    /**
+     * @param xRes the xRes to set
+     */
+    public void setxRes(int xRes) {
+        this.xRes = xRes;
+    }
+
+    /**
+     * @return the yRes
+     */
+    public int getyRes() {
+        return yRes;
+    }
+
+    /**
+     * @param yRes the yRes to set
+     */
+    public void setyRes(int yRes) {
+        this.yRes = yRes;
+    }
+
+    /**
+     * @return the xMax
+     */
+    public int getxMax() {
+        return xMax;
+    }
+
+    /**
+     * @param xMax the xMax to set
+     */
+    public void setxMax(int xMax) {
+        this.xMax = xMax;
+    }
+
+    /**
+     * @return the yMax
+     */
+    public int getyMax() {
+        return yMax;
+    }
+
+    /**
+     * @param yMax the yMax to set
+     */
+    public void setyMax(int yMax) {
+        this.yMax = yMax;
+    }
+
+    /**
+     * @return the resMismatch
+     */
+    public boolean isResMismatch() {
+        return resMismatch;
+    }
+
+    /**
+     * @param resMismatch the resMismatch to set
+     */
+    public void setResMismatch(boolean resMismatch) {
+        this.resMismatch = resMismatch;
+    }
     
     private ArrayList<OrdXYData> space;
     private ArrayList<JVector> vectors;
-    
     private int xRes, yRes,xMax,yMax;
     private boolean resMismatch;
-    
+    private int nComp; //Helps to keep track of dimensionality of the vectors space (i.e all vectors have same number of components 
    // private double [] xcompPixelArray, ycompPixelArray;
-    public double[] getCompArray(int Idx){
+    
+ public double[] getCompArray(int Idx){
     double[] pixels;
-    if(space.isEmpty() || vectors.isEmpty()){
+    if( getSpace().isEmpty() || getVectors().isEmpty()){
         javax.swing.JOptionPane.showMessageDialog(null, "There are no vectors to retrive");
         return null;
     }
-    if(space.size() != vectors.size()){
+    if( getSpace().size() != getVectors().size()){
         javax.swing.JOptionPane.showMessageDialog(null, "Vector count and pixel mismatch");
         return null;
     }
-    if(xRes == 0 || yRes == 0){
+    if( getxRes() == 0 || getyRes() == 0){
         javax.swing.JOptionPane.showMessageDialog
                     (null, "Please assign resolution of the image/array first\n");
         return null;
     }           
-    pixels = new double[xRes * yRes];
+    pixels = new double[getxRes() * getyRes()];
     
     int pixelCount = 0, arrayIdx;
         
-    for ( OrdXYData curPixel : space){
-        arrayIdx = (int) Math.round((double)curPixel.getX() + (double)curPixel.getY() * xRes);
-        if(arrayIdx < xRes * yRes){
-            JVector vect = vectors.get(pixelCount);
+    for ( OrdXYData curPixel : getSpace()){
+        arrayIdx = (int) Math.round((double)curPixel.getX() + (double)curPixel.getY() * getxRes());
+        if(arrayIdx < getxRes() * getyRes()){
+            JVector vect = getVectors().get(pixelCount);
             pixels[arrayIdx] = (double)vect.getComponent(Idx);
         }else{
             javax.swing.JOptionPane.showMessageDialog
-                    (null, "Array index " +arrayIdx +" does not match the resolution of image :" + xRes + yRes +"\n");
+                    (null, "Array index " +arrayIdx +" does not match the resolution of image :" + getxRes() + getyRes() +"\n");
         }
         pixelCount++;
     }
@@ -82,19 +180,25 @@ public class JVectorSpace {
      
      int currX = Math.round((float)coordinates.getX()); 
      int currY = Math.round((float)coordinates.getY());
+     int currComp = vector.getNComponents();
      
-     xMax = currX > xMax ? currX : xMax;
-     yMax = currY > yMax ? currY : yMax;
-     resMismatch = xRes > xMax || yRes > yMax;
+        if(currComp != getnComp() && ! this.vectors.isEmpty()){
+            javax.swing.JOptionPane.showMessageDialog(null, "Found vector component mismatch");
+            return;
+        }
+                
+        setxMax(currX > getxMax() ? currX : getxMax());
+        setyMax(currY > getyMax() ? currY : getyMax());
+        setResMismatch(getxRes() > getxMax() || getyRes() > getyMax());
      
-     if (resAuto && resMismatch){
-        xRes =   currX >= xRes ? currX : xRes;    
-        yRes =   currY >= yRes ? currY : yRes;  
-        resMismatch = false;
+     if (resAuto && isResMismatch()){
+            setxRes(currX >= getxRes() ? currX : getxRes());    
+            setyRes(currY >= getyRes() ? currY : getyRes());  
+            setResMismatch(false);
      }
      
-     space.add(coordinates);
-     vectors.add(vector);
+        getSpace().add(coordinates);
+        getVectors().add(vector);
  }
  public void fillSpace(ArrayList<OrdXYData> coordLst,ArrayList<JVector>vectorLst,boolean resAuto){
      
