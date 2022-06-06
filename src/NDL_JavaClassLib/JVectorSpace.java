@@ -21,7 +21,7 @@ public class JVectorSpace {
     private boolean resMismatch;
     
    // private double [] xcompPixelArray, ycompPixelArray;
-    public double[] getCompArray(int Idx){
+   public double[] getCompArray(int Idx){
     double[] pixels;
     if(space.isEmpty() || vectors.isEmpty()){
         javax.swing.JOptionPane.showMessageDialog(null, "There are no vectors to retrive");
