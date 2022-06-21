@@ -45,6 +45,20 @@ public class JVectorCmpImg {
             heatMapImg[compCount] = new FloatProcessor(xRes, yRes, vectors1.getCompArray(compCount));
         }
     }
+    public void addScalar(JHeatMapArray hmaps){
+        int count = 0;
+        //if( hmaps.length != 0){
+            this.xRes = hmaps.getxRes();
+            this.yRes = hmaps.getyRes();
+            //for(JHeatMapArray map : hmaps){
+                if (xRes != hmaps.getxRes() || yRes != hmaps.getyRes())     //skip the arrays whose res do not match. 
+                    heatMapImg[0] = null;
+                else
+                    heatMapImg[0] = new FloatProcessor(xRes,yRes,hmaps.to1DArray());
+                count++;
+            
+        
+    }
     public void saveImages(String folderPath,String prefix){
        
        ImagePlus [] images = getImages();
