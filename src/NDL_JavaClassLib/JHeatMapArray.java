@@ -84,6 +84,11 @@ public class JHeatMapArray extends Object{
         this.setyRes(yRes);
         setTimeSeries(new DataTrace_ver_3());
     }
+    public JHeatMapArray(DataTrace_ver_3 trace){
+        setTimeSeries(trace);
+        this.setxRes(Math.round((float)(timeSeries.getXMax()-timeSeries.getXMin())));
+        this.setyRes(Math.round((float)(timeSeries.getYMax()-timeSeries.getYMin())));
+    }
     public void convertTimeSeriestoArray(int xRes,int yRes){
         
         pixelArray = new double[xRes][yRes];
