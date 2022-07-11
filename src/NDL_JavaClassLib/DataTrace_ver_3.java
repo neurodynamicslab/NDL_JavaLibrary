@@ -87,8 +87,8 @@ public class DataTrace_ver_3 extends ArrayList<OrdXYErrData>{
         FileReader reader;
         boolean warning = false;
         
-        if(nDataSegments != 2 || nDataSegments != 5) {     
-            javax.swing.JOptionPane.showMessageDialog(null, "Data format mismatch I can not understand the format");
+        if(nDataSegments != 2 && nDataSegments != 5) {     
+            javax.swing.JOptionPane.showMessageDialog(null, "Data format mismatch I can not understand the format I see " + nDataSegments +" segments");
             return false;
         }
           File dataFile = new File(fileName);
