@@ -56,9 +56,18 @@ public class JHeatMapArray extends Object{
     }
 
     /**
+     * 
      * @return the pixelArray
      */
     public double[][] getPixelArray() {
+        convertTimeSeriestoArray();
+        return pixelArray;
+    }
+    public double[][] getPixelArray(int xRes, int yRes){
+        this.setxRes(xRes);
+        this.setyRes(yRes);
+        
+        this.convertTimeSeriestoArray(xRes, yRes);
         return pixelArray;
     }
 
