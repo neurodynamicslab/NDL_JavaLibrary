@@ -1,5 +1,6 @@
 package NDL_JavaClassLib;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -16,10 +17,11 @@ public class JVector<N extends Number> {
     
     ArrayList<N> Components;
     public JVector(N [] C){
-        for(N c : C)
-            Components.add(c);
+        Components = new ArrayList<>();
+        Components.addAll(Arrays.asList(C));
     }
    public JVector(ArrayList<N> C){
+       Components = new ArrayList<>();
        for(N c : C)
             Components.add(c);
    }

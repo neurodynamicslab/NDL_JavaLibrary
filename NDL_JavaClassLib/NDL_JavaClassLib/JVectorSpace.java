@@ -156,19 +156,23 @@ public class JVectorSpace {
      this.yRes = yRes;
      this.xMax = this.yMax = 0;
      resMismatch = false;
-     space = null;
-     vectors = null;
+     space = new ArrayList<>();
+     vectors = new ArrayList<>();
  } 
  public JVectorSpace(int xRes, int yRes, boolean resAuto, OrdXYData[] spaceArray,JVector[] vectorArray ){
      this.xRes = xRes;
      this.yRes = yRes;
      this.xMax = this.yMax = 0;
      resMismatch = false;
+     space = new ArrayList<>();
+     vectors = new ArrayList<>();
      
      if(spaceArray.length != vectorArray.length || spaceArray.length == 0){
          space = null;
          vectors = null;
      }else{
+         space = new ArrayList<> ();
+         vectors = new ArrayList<> ();
          int Idx = 0;
          for(OrdXYData coord : spaceArray){
              addVector(coord,vectorArray[Idx],resAuto);
@@ -178,11 +182,12 @@ public class JVectorSpace {
  }
  public void addVector(OrdXYData coordinates, JVector vector, boolean resAuto){
      
-     int currX = Math.round((float)coordinates.getX()); 
-     int currY = Math.round((float)coordinates.getY());
+     int currX = (int) Math.round((double)coordinates.getX()); 
+     int currY = (int) Math.round((double)coordinates.getY());
      int currComp = vector.getNComponents();
-     
-        if(currComp != getnComp() && ! this.vectors.isEmpty()){
+        if(this.vectors.isEmpty())
+            this.setnComp(vector.getNComponents());
+        if(currComp != getnComp()){
             javax.swing.JOptionPane.showMessageDialog(null, "Found vector component mismatch");
             return;
         }
@@ -235,6 +240,8 @@ public class JVectorSpace {
      this.yRes = yRes;
      this.xMax = this.yMax = 0;
      resMismatch = false;
+     space = new ArrayList<>();
+     vectors = new ArrayList<>();
      
      if(coordLst.isEmpty() || (vectorLst.size() != coordLst.size())){
          space = null;

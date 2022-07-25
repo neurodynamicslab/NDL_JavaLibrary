@@ -41,8 +41,8 @@ public class JVectorCmpImg {
         //this.vectors = vectors1;
         int cmp = vectors1.getnComp();
      
-        this.xRes = vectors1.getxMax();
-        this.yRes = vectors1.getyMax();  
+        this.xRes = vectors1.getxRes();
+        this.yRes = vectors1.getyRes();  
         for (int compCount = 0; compCount < cmp; compCount++) {
             heatMapImg[compCount] = new FloatProcessor(xRes, yRes, vectors1.getCompArray(compCount));
         }
