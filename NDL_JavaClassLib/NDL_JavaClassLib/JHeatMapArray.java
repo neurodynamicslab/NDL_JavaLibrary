@@ -136,6 +136,8 @@ public class JHeatMapArray extends Object{
         for(double [] y : pixelArray){
             for(double val : y){
                 OneD[xIdx + (yIdx*xRes)] = val;
+//                if(val > 0)
+//                    System.out.print(""+xIdx+"\t"+yIdx+"\t"+(xIdx + (yIdx*xRes))+"\n");
                 xIdx++;
             }
             yIdx++;

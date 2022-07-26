@@ -136,18 +136,37 @@ public class JVectorSpace {
     }           
     pixels = new double[getxRes() * getyRes()];
     
-    int pixelCount = 0, arrayIdx;
-        
-    for ( OrdXYData curPixel : getSpace()){
-        arrayIdx = (int) Math.round((double)curPixel.getX() + ((double)curPixel.getY() * getxRes()));
-        if(arrayIdx < getxRes() * getyRes()){
-            JVector vect = getVectors().get(pixelCount);
-            pixels[arrayIdx] = (double)vect.getComponent(Idx);
-        }else{
-            javax.swing.JOptionPane.showMessageDialog
-                    (null, "Array index " +arrayIdx +" does not match the resolution of image :" + getxRes() + getyRes() +"\n");
+//    int pixelCount = 0, arrayIdx;
+//        //System.out.print("xRes = "+getxRes()+"\n");
+//    for ( OrdXYData curPixel : getSpace()){
+//        arrayIdx = (int) (Math.round((double)curPixel.getY()) + Math.round((double)curPixel.getX() * getyRes()));
+//        //System.out.print(""+curPixel.getX()+"\t"+curPixel.getY()+"\t"+arrayIdx+"\n");
+//        if(arrayIdx < (getxRes() * getyRes())){
+//            JVector vect = getVectors().get(pixelCount);
+//            pixels[arrayIdx] = (double)vect.getComponent(Idx);
+//        }else{
+//            javax.swing.JOptionPane.showMessageDialog
+//                    (null, "Array index " +arrayIdx +" does not match the resolution of image :" + getxRes() + getyRes() +"\n");
+//        }
+//        pixelCount++;
+//    }
+
+    double[][] tempArray = new double[getxRes()][getyRes()];
+    int currX, currY;
+    int dataIdx = 0;
+    for(OrdXYData curPixel : getSpace()){
+        currX = (int)Math.round((double)curPixel.getX());
+        currY = (int)Math.round((double)curPixel.getY());
+        tempArray[currX][currY] = (double)getVectors().get(dataIdx).getComponent(Idx);
+    }
+    int xIdx = 0, yIdx = 0;
+    for(double[] Y : tempArray){
+        for(double Val : Y){
+            pixels[xIdx + yIdx*getxRes()] = Val;
+            xIdx++;
         }
-        pixelCount++;
+        yIdx ++;
+        xIdx = 0;
     }
     return pixels;
     }
@@ -180,7 +199,7 @@ public class JVectorSpace {
          }
      }
  }
- public void addVector(OrdXYData coordinates, JVector vector, boolean resAuto){
+ private void addVector(OrdXYData coordinates, JVector vector, boolean resAuto){
      
      int currX = (int) Math.round((double)coordinates.getX()); 
      int currY = (int) Math.round((double)coordinates.getY());
