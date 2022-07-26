@@ -139,7 +139,7 @@ public class JVectorSpace {
     int pixelCount = 0, arrayIdx;
         
     for ( OrdXYData curPixel : getSpace()){
-        arrayIdx = (int) Math.round((double)curPixel.getX() + (double)curPixel.getY() * getxRes());
+        arrayIdx = (int) Math.round((double)curPixel.getX() + ((double)curPixel.getY() * getxRes()));
         if(arrayIdx < getxRes() * getyRes()){
             JVector vect = getVectors().get(pixelCount);
             pixels[arrayIdx] = (double)vect.getComponent(Idx);
