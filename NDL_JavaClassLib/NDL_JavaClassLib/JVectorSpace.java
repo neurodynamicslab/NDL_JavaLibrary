@@ -158,11 +158,12 @@ public class JVectorSpace {
         currX = (int)Math.round((double)curPixel.getX());
         currY = (int)Math.round((double)curPixel.getY());
         tempArray[currX][currY] = (double)getVectors().get(dataIdx).getComponent(Idx);
+        dataIdx++;
     }
     int xIdx = 0, yIdx = 0;
     for(double[] Y : tempArray){
         for(double Val : Y){
-            pixels[xIdx + yIdx*getxRes()] = Val;
+            pixels[xIdx + yIdx*getxRes()] += Val;
             xIdx++;
         }
         yIdx ++;
