@@ -49,7 +49,10 @@ public class JVectorCmpImg {
     }
     public void addScalar(JHeatMapArray hmaps){
         int count = 0;
-        
+        //if( hmaps.length != 0){
+           // this.xRes = hmaps.getxRes();
+            //this.yRes = hmaps.getyRes();
+            //for(JHeatMapArray map : hmaps){
                 if (xRes != hmaps.getxRes() || yRes != hmaps.getyRes()){     //skip the arrays whose res do not match. 
                     heatMapImg[0] = null;
                     javax.swing.JOptionPane.showConfirmDialog(null,"Resolution mismatch selcted resolution "+xRes +" x " + yRes +
