@@ -481,6 +481,8 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
          prevY = currY;
          prevX = currX;
      }
+     difData.remove(0); //delete the head end that does not have a data to find the difference
+                        //tail end is taken care of by the loop. The loop terminates.
      if(Overwrite){
          this.clear();
          difData.forEach((data) -> {

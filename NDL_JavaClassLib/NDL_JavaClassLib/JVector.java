@@ -16,6 +16,15 @@ import java.util.Arrays;
 public class JVector<N extends Number> {
     
     ArrayList<N> Components;
+    /***
+     * Convenience constructor for creating 2D cartesian vector objects. 
+     * @param Xcord
+     * @param Ycord 
+     */
+    public JVector(N Xcord, N Ycord){
+        Components.add(Xcord);
+        Components.add(Ycord);
+    }
     public JVector(N [] C){
         Components = new ArrayList<>();
         Components.addAll(Arrays.asList(C));
