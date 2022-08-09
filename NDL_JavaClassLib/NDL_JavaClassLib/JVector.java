@@ -15,7 +15,7 @@ import java.util.Arrays;
  */
 public class JVector<N extends Number> {
     
-    ArrayList<N> Components;
+    protected ArrayList<N> Components;
     /***
      * Convenience constructor for creating 2D cartesian vector objects. 
      * @param Xcord
@@ -147,6 +147,27 @@ public class JVector<N extends Number> {
         
         sum.addVectors(Comp);
         return sum;
+    }
+    public void add2this(JVector vect){
+        JVector sumVect;
+        sumVect = add(this,vect);
+        this.Components = sumVect.Components;
+        calculateNorm();
+    }
+    public  JVector getScaledVector(N scale){
+        JVector scaledVect;
+        ArrayList scaledC = new ArrayList();
+        int Idx = 0;
+       for(Number x : Components){
+           scaledC.add(Idx, (Double)Components.get(Idx)*(Double)scale);
+           Idx++;
+       }
+        scaledVect = new JVector(scaledC);
+        return scaledVect;
+    }
+    public void scale(N scale){
+        Components = getScaledVector(scale).Components;
+        this.calculateNorm();
     }
     //private ArrayList <Number> Components;
     private double L1Norm,L2Norm,maxNorm;

@@ -274,4 +274,43 @@ public class JVectorSpace {
          }
      }
  }
+ public JVectorSpace scaleVectors(Number[][] scalingMat){
+     
+     
+     if(scalingMat[0].length != yRes && scalingMat.length != xRes){
+         System.out.println("The dimension of the scaling Matrix in (x X y)/(width X height) "+ scalingMat.length + " X " 
+                                            + scalingMat[0].length + "is not same as vector space" + this.xRes + " X " + this.yRes);
+         return null;
+     }
+     //if(this.isResMismatch()) Do a reset of res or inform the user to set it
+     
+     JVectorSpace scaledSpace = new JVectorSpace(this.xRes,this.yRes);
+     int xIdx, yIdx;
+     double scale = 1;
+     int Idx = 0;
+     
+     for(var XYCord : space){
+         xIdx = (int) Math.round((Double)XYCord.getX());
+         yIdx = (int) Math.round((Double)XYCord.getY());
+         try{
+         scale = (Double)scalingMat[xIdx][yIdx]; 
+         }
+         catch(Exception e){
+             System.out.println(e.getMessage()+ " Resolution mismatch !");
+         }
+         scaledSpace.addVector(XYCord,vectors.get(Idx++).getScaledVector(scale), resMismatch);
+     }
+     return scaledSpace;
+ }
+ public JVectorSpace scaleVectors(double scale){
+     
+     JVectorSpace scaledSpace = new JVectorSpace(this.xRes,this.yRes);
+     
+     int Idx = 0;
+     
+     for(var XYCord : space)         
+         scaledSpace.addVector(XYCord,vectors.get(Idx++).getScaledVector(scale), resMismatch);
+     
+     return scaledSpace;
+ }
 }
