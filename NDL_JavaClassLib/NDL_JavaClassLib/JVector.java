@@ -134,6 +134,20 @@ public class JVector<N extends Number> {
         angle = java.lang.Math.acos(this.dotProduct(targetVector)/(this.L2Norm * targetVector.getL2Norm()));
         return angle;
     }
+    public static JVector add( JVector vect1, JVector vect2){
+        if(vect1.getNComponents() != vect2.getNComponents()){
+            System.out.println("No of components of Vect1("+vect1.getNComponents()+") does not match with that of Vect2("+vect2.getNComponents()+")");
+            return null;
+        }
+        JVector sum = new JVector(vect1.Components);
+        int Idx =0;
+        ArrayList<Number> Comp = new ArrayList();
+        for(var N1 : vect1.Components) 
+            Comp.add((Double)N1 + (Double)vect2.getComponent(Idx++));
+        
+        sum.addVectors(Comp);
+        return sum;
+    }
     //private ArrayList <Number> Components;
     private double L1Norm,L2Norm,maxNorm;
     private boolean normsReady;

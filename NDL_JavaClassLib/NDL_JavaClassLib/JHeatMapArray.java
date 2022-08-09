@@ -120,8 +120,11 @@ public class JHeatMapArray extends Object{
     }
     public void convertTimeSeriestoArray(){
         this.timeSeries.resetStat();
-        this.convertTimeSeriestoArray( Math.round((float)(timeSeries.getXMax()-timeSeries.getXMin()))
+        if(this.xRes == 0 && this.yRes == 0)
+            this.convertTimeSeriestoArray( Math.round((float)(timeSeries.getXMax()-timeSeries.getXMin()))
                                         ,Math.round((float)(timeSeries.getYMax()-timeSeries.getYMin())));
+        else
+            this.convertTimeSeriestoArray(xRes, yRes);
     }
     /***
      * Method to convert two dimensional pixel array to linear 1D array.They are useful during
