@@ -200,6 +200,17 @@ public class JVectorSpace {
          }
      }
  }
+ public JVectorSpace(JVectorSpace newVS){
+   this.space = newVS.getSpace();
+   this.vectors = newVS.getVectors();
+   this.xRes = newVS.getxRes();
+   this.yRes = newVS.getyRes();
+   this.nComp = newVS.getnComp();
+   this.xMax = newVS.getxMax();
+   this.yMax = newVS.getyMax();
+   this.resMismatch = newVS.isResMismatch();
+   
+ }
  private void addVector(OrdXYData coordinates, JVector vector, boolean resAuto){
      
      int currX = (int) Math.round((double)coordinates.getX()); 
@@ -312,5 +323,9 @@ public class JVectorSpace {
          scaledSpace.addVector(XYCord,vectors.get(Idx++).getScaledVector(scale), resMismatch);
      
      return scaledSpace;
+ }
+ 
+ public void makeProjections(JVector posiVector){
+     
  }
 }
