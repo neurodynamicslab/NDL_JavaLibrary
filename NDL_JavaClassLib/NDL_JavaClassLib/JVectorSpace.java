@@ -117,7 +117,8 @@ public class JVectorSpace {
     private int xRes, yRes,xMax,yMax;
     private boolean resMismatch;
     private int nComp; //Helps to keep track of dimensionality of the vectors space (i.e all vectors have same number of components 
-   // private double [] xcompPixelArray, ycompPixelArray;
+   
+    private JVectorSpace projection;
     
  public double[] getCompArray(int Idx){
     double[] pixels;
@@ -324,8 +325,26 @@ public class JVectorSpace {
      
      return scaledSpace;
  }
+ public JVectorSpace getProjections( JVector Vector, boolean along){
+     makeProjections(Vector, along);
+     return projection;
+ }
  
- public void makeProjections(JVector posiVector){
+ public void makeProjections(JVector Vector, boolean along){
+     
+     projection = new JVectorSpace(this);
+     
+     
+     double dotProd,mag,angle;
+     
+     ArrayList projVects = new ArrayList();
+     for (var vect : projection.vectors){
+           dotProd = vect.dotProduct(Vector);
+           mag = vect.getL2Norm()*Vector.getL2Norm();
+           angle = Math.acos(dotProd/mag);
+           projVects.add(new J2DVectorPolar(mag,angle).getCartVect());
+     }
+     projection.vectors = projVects;
      
  }
 }

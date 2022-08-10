@@ -54,6 +54,9 @@ public class JHeatMapArray extends Object{
     public void setTimeSeries(DataTrace_ver_3 timeSeries) {
         this.timeSeries = timeSeries;
     }
+    public void appendTimeSeries(DataTrace_ver_3 trace){
+        this.timeSeries.addAll(trace);
+    }
 
     /**
      * 
