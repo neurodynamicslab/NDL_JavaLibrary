@@ -342,9 +342,10 @@ public class JVectorSpace {
            dotProd = vect.dotProduct(Vector);
            mag = vect.getL2Norm()*Vector.getL2Norm();
            angle = Math.acos(dotProd/mag);
-           projVects.add(new J2DVectorPolar(mag,angle).getCartVect());
+           projVects.add(new J2DVectorPolar(dotProd,angle).getCartVect());
      }
      projection.vectors = projVects;
      
  }
+
 }
