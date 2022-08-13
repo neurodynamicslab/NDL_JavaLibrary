@@ -22,6 +22,7 @@ public class JVector<N extends Number> {
      * @param Ycord 
      */
     public JVector(N Xcord, N Ycord){
+        Components = new ArrayList<>();
         Components.add(Xcord);
         Components.add(Ycord);
     }
@@ -107,7 +108,10 @@ public class JVector<N extends Number> {
         double max = 0;
         //int nComponents = 0;
         for(Number N : Components){
-            double comp = (double)N;
+           
+                
+            Double comp = N.doubleValue();
+            
             absSum += java.lang.Math.abs(comp);
             sumSq += comp * comp;
             max = comp > max ? comp : max ;
