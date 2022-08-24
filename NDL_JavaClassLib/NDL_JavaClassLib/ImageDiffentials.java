@@ -1,16 +1,6 @@
 
-import ij.IJ;
 import ij.ImagePlus;
-import ij.ImageStack;
-import ij.Undo;
-import ij.WindowManager;
-import ij.gui.GenericDialog;
-import ij.gui.ImageWindow;
-import ij.gui.ProgressBar;
-import ij.plugin.PlugIn;
-import ij.process.ImageConverter;
 import ij.process.ImageProcessor;
-import ij.process.StackConverter;
 
 
 /**
@@ -101,25 +91,25 @@ public final static int DIFFER_Y = 7;
 /*....................................................................
 	private variables
 ....................................................................*/
-private ImagePlus imp = null;
+//private ImagePlus imp = null;
 //private ProgressBar progressBar = IJ.getInstance().getProgressBar();
-private int completed = 1;
-private int processDuration = 1;
-private int stackSize = 1;
+//private int completed = 1;
+//private int processDuration = 1;
+//private int stackSize = 1;
 private final double FLT_EPSILON =
 	(double)Float.intBitsToFloat((int)0x33FFFFFF);
 //private long lastTime = System.currentTimeMillis();
-private static int operation = LAPLACIAN;
-private static String[] operations = {
-	"Gradient Magnitude",
-	"Gradient Direction",
-	"Laplacian",
-	"Largest Hessian",
-	"Smallest Hessian",
-	"Hessian Orientation",
-        "DIFFER_X",
-        "DIFFER_Y"
-};
+//private static int operation = LAPLACIAN;
+//private static String[] operations = {
+//	"Gradient Magnitude",
+//	"Gradient Direction",
+//	"Laplacian",
+//	"Largest Hessian",
+//	"Smallest Hessian",
+//	"Hessian Orientation",
+//        "DIFFER_X",
+//        "DIFFER_Y"
+//};
 
 /*....................................................................
 	PlugIn methods
@@ -239,7 +229,7 @@ public void getHorizontalGradient (
 		getSplineInterpolationCoefficients(line, tolerance);
 		getGradient(line);
 		putRow(ip, y, line);
-		stepProgressBar();
+//		stepProgressBar();
 	}
 } /* end getHorizontalGradient */
 
@@ -261,7 +251,7 @@ public void getHorizontalHessian (
 		getSplineInterpolationCoefficients(line, tolerance);
 		getHessian(line);
 		putRow(ip, y, line);
-		stepProgressBar();
+//		stepProgressBar();
 	}
 } /* end getHorizontalHessian */
 
@@ -285,7 +275,7 @@ public void getVerticalGradient (
 		getSplineInterpolationCoefficients(line, tolerance);
 		getGradient(line);
 		putColumn(ip, x, line);
-		stepProgressBar();
+//		stepProgressBar();
 	}
 } /* end getVerticalGradient */
 public ImageProcessor DifferentialX(ImageProcessor ip){
@@ -314,7 +304,7 @@ public void getVerticalHessian (
 		getSplineInterpolationCoefficients(line, tolerance);
 		getHessian(line);
 		putColumn(ip, x, line);
-		stepProgressBar();
+//		stepProgressBar();
 	}
 } /* end getVerticalHessian */
 
@@ -356,183 +346,183 @@ private void antiSymmetricFirMirrorOnBounds (
 } /* end antiSymmetricFirMirrorOnBounds */
 
 /*------------------------------------------------------------------*/
-private void cleanUpProgressBar (
-) {
-	completed = 0;
-	//progressBar.show(2.0);
-} /* end cleanUpProgressBar */
+//private void cleanUpProgressBar (
+//) {
+//	completed = 0;
+//	//progressBar.show(2.0);
+//} /* end cleanUpProgressBar */
 
 /*------------------------------------------------------------------*/
-private void doIt (
-	ImageProcessor ip
-) {
-	int width = ip.getWidth();
-	int height = ip.getHeight();
-
-	if (!(ip.getPixels() instanceof float[])) {
-		throw new IllegalArgumentException("Float image required");
-	}
-	switch (operation) {
-                case DIFFER_X:
-                    getHorizontalGradient(ip,FLT_EPSILON);
-                    break;
-                case DIFFER_Y:
-                    getVerticalGradient(ip,FLT_EPSILON);
-                    break;
-		case GRADIENT_MAGNITUDE:
-			{
-				ImageProcessor h = ip.duplicate();
-				ImageProcessor v = ip.duplicate();
-				float[] floatPixels = (float[])ip.getPixels();
-				float[] floatPixelsH = (float[])h.getPixels();
-				float[] floatPixelsV = (float[])v.getPixels();
-
-				getHorizontalGradient(h, FLT_EPSILON);
-				getVerticalGradient(v, FLT_EPSILON);
-				for (int y = 0, k = 0; (y < height); y++) {
-					for (int x = 0; (x < width); x++, k++) {
-						floatPixels[k] =
-							(float)Math.sqrt(floatPixelsH[k] * floatPixelsH[k]
-							+ floatPixelsV[k] * floatPixelsV[k]);
-					}
-					stepProgressBar();
-				}
-			}
-			break;
-		case GRADIENT_DIRECTION:
-			{
-				ImageProcessor h = ip.duplicate();
-				ImageProcessor v = ip.duplicate();
-				float[] floatPixels = (float[])ip.getPixels();
-				float[] floatPixelsH = (float[])h.getPixels();
-				float[] floatPixelsV = (float[])v.getPixels();
-
-				getHorizontalGradient(h, FLT_EPSILON);
-				getVerticalGradient(v, FLT_EPSILON);
-				for (int y = 0, k = 0; (y < height); y++) {
-					for (int x = 0; (x < width); x++, k++) {
-						floatPixels[k] =
-							(float)Math.atan2(floatPixelsH[k], floatPixelsV[k]);
-					}
-					stepProgressBar();
-				}
-			}
-			break;
-		case LAPLACIAN:
-			{
-				ImageProcessor hh = ip.duplicate();
-				ImageProcessor vv = ip.duplicate();
-				float[] floatPixels = (float[])ip.getPixels();
-				float[] floatPixelsHH = (float[])hh.getPixels();
-				float[] floatPixelsVV = (float[])vv.getPixels();
-
-				getHorizontalHessian(hh, FLT_EPSILON);
-				getVerticalHessian(vv, FLT_EPSILON);
-				for (int y = 0, k = 0; (y < height); y++) {
-					for (int x = 0; (x < width); x++, k++) {
-						floatPixels[k] =
-							(float)(floatPixelsHH[k] + floatPixelsVV[k]);
-					}
-					stepProgressBar();
-				}
-			}
-			break;
-		case LARGEST_HESSIAN:
-			{
-				ImageProcessor hh = ip.duplicate();
-				ImageProcessor vv = ip.duplicate();
-				ImageProcessor hv = ip.duplicate();
-				float[] floatPixels = (float[])ip.getPixels();
-				float[] floatPixelsHH = (float[])hh.getPixels();
-				float[] floatPixelsVV = (float[])vv.getPixels();
-				float[] floatPixelsHV = (float[])hv.getPixels();
-
-				getHorizontalHessian(hh, FLT_EPSILON);
-				getVerticalHessian(vv, FLT_EPSILON);
-				getCrossHessian(hv, FLT_EPSILON);
-				for (int y = 0, k = 0; (y < height); y++) {
-					for (int x = 0; (x < width); x++, k++) {
-						floatPixels[k] =
-							(float)(0.5 * (floatPixelsHH[k] + floatPixelsVV[k]
-							+ Math.sqrt(4.0 * floatPixelsHV[k]
-							* floatPixelsHV[k]
-							+ (floatPixelsHH[k] - floatPixelsVV[k])
-							* (floatPixelsHH[k] - floatPixelsVV[k]))));
-					}
-					stepProgressBar();
-				}
-			}
-			break;
-		case SMALLEST_HESSIAN:
-			{
-				ImageProcessor hh = ip.duplicate();
-				ImageProcessor vv = ip.duplicate();
-				ImageProcessor hv = ip.duplicate();
-				float[] floatPixels = (float[])ip.getPixels();
-				float[] floatPixelsHH = (float[])hh.getPixels();
-				float[] floatPixelsVV = (float[])vv.getPixels();
-				float[] floatPixelsHV = (float[])hv.getPixels();
-
-				getHorizontalHessian(hh, FLT_EPSILON);
-				getVerticalHessian(vv, FLT_EPSILON);
-				getCrossHessian(hv, FLT_EPSILON);
-				for (int y = 0, k = 0; (y < height); y++) {
-					for (int x = 0; (x < width); x++, k++) {
-						floatPixels[k] =
-							(float)(0.5 * (floatPixelsHH[k] + floatPixelsVV[k]
-							- Math.sqrt(4.0 * floatPixelsHV[k]
-							* floatPixelsHV[k]
-							+ (floatPixelsHH[k] - floatPixelsVV[k])
-							* (floatPixelsHH[k] - floatPixelsVV[k]))));
-					}
-					stepProgressBar();
-				}
-			}
-			break;
-		case HESSIAN_ORIENTATION:
-			{
-				ImageProcessor hh = ip.duplicate();
-				ImageProcessor vv = ip.duplicate();
-				ImageProcessor hv = ip.duplicate();
-				float[] floatPixels = (float[])ip.getPixels();
-				float[] floatPixelsHH = (float[])hh.getPixels();
-				float[] floatPixelsVV = (float[])vv.getPixels();
-				float[] floatPixelsHV = (float[])hv.getPixels();
-
-				getHorizontalHessian(hh, FLT_EPSILON);
-				getVerticalHessian(vv, FLT_EPSILON);
-				getCrossHessian(hv, FLT_EPSILON);
-				for (int y = 0, k = 0; (y < height); y++) {
-					for (int x = 0; (x < width); x++, k++) {
-						if (floatPixelsHV[k] < 0.0) {
-							floatPixels[k] =
-								(float)(-0.5 * Math.acos((floatPixelsHH[k]
-								- floatPixelsVV[k])
-								/ Math.sqrt(4.0 * floatPixelsHV[k]
-								* floatPixelsHV[k]
-								+ (floatPixelsHH[k] - floatPixelsVV[k])
-								* (floatPixelsHH[k] - floatPixelsVV[k]))));
-						}
-						else {
-							floatPixels[k] =
-								(float)(0.5 * Math.acos((floatPixelsHH[k]
-								- floatPixelsVV[k])
-								/ Math.sqrt(4.0 * floatPixelsHV[k]
-								* floatPixelsHV[k]
-								+ (floatPixelsHH[k] - floatPixelsVV[k])
-								* (floatPixelsHH[k] - floatPixelsVV[k]))));
-						}
-					}
-					stepProgressBar();
-				}
-			}
-			break;
-		default:
-			throw new IllegalArgumentException("Invalid operation");
-	}
-	ip.resetMinAndMax();
-	imp.updateAndDraw();
-} /* end doIt */
+//private void doIt (
+//	ImageProcessor ip
+//) {
+//	int width = ip.getWidth();
+//	int height = ip.getHeight();
+//
+//	if (!(ip.getPixels() instanceof float[])) {
+//		throw new IllegalArgumentException("Float image required");
+//	}
+//	switch (operation) {
+//                case DIFFER_X:
+//                    getHorizontalGradient(ip,FLT_EPSILON);
+//                    break;
+//                case DIFFER_Y:
+//                    getVerticalGradient(ip,FLT_EPSILON);
+//                    break;
+//		case GRADIENT_MAGNITUDE:
+//			{
+//				ImageProcessor h = ip.duplicate();
+//				ImageProcessor v = ip.duplicate();
+//				float[] floatPixels = (float[])ip.getPixels();
+//				float[] floatPixelsH = (float[])h.getPixels();
+//				float[] floatPixelsV = (float[])v.getPixels();
+//
+//				getHorizontalGradient(h, FLT_EPSILON);
+//				getVerticalGradient(v, FLT_EPSILON);
+//				for (int y = 0, k = 0; (y < height); y++) {
+//					for (int x = 0; (x < width); x++, k++) {
+//						floatPixels[k] =
+//							(float)Math.sqrt(floatPixelsH[k] * floatPixelsH[k]
+//							+ floatPixelsV[k] * floatPixelsV[k]);
+//					}
+//					stepProgressBar();
+//				}
+//			}
+//			break;
+//		case GRADIENT_DIRECTION:
+//			{
+//				ImageProcessor h = ip.duplicate();
+//				ImageProcessor v = ip.duplicate();
+//				float[] floatPixels = (float[])ip.getPixels();
+//				float[] floatPixelsH = (float[])h.getPixels();
+//				float[] floatPixelsV = (float[])v.getPixels();
+//
+//				getHorizontalGradient(h, FLT_EPSILON);
+//				getVerticalGradient(v, FLT_EPSILON);
+//				for (int y = 0, k = 0; (y < height); y++) {
+//					for (int x = 0; (x < width); x++, k++) {
+//						floatPixels[k] =
+//							(float)Math.atan2(floatPixelsH[k], floatPixelsV[k]);
+//					}
+//					stepProgressBar();
+//				}
+//			}
+//			break;
+//		case LAPLACIAN:
+//			{
+//				ImageProcessor hh = ip.duplicate();
+//				ImageProcessor vv = ip.duplicate();
+//				float[] floatPixels = (float[])ip.getPixels();
+//				float[] floatPixelsHH = (float[])hh.getPixels();
+//				float[] floatPixelsVV = (float[])vv.getPixels();
+//
+//				getHorizontalHessian(hh, FLT_EPSILON);
+//				getVerticalHessian(vv, FLT_EPSILON);
+//				for (int y = 0, k = 0; (y < height); y++) {
+//					for (int x = 0; (x < width); x++, k++) {
+//						floatPixels[k] =
+//							(float)(floatPixelsHH[k] + floatPixelsVV[k]);
+//					}
+//					stepProgressBar();
+//				}
+//			}
+//			break;
+//		case LARGEST_HESSIAN:
+//			{
+//				ImageProcessor hh = ip.duplicate();
+//				ImageProcessor vv = ip.duplicate();
+//				ImageProcessor hv = ip.duplicate();
+//				float[] floatPixels = (float[])ip.getPixels();
+//				float[] floatPixelsHH = (float[])hh.getPixels();
+//				float[] floatPixelsVV = (float[])vv.getPixels();
+//				float[] floatPixelsHV = (float[])hv.getPixels();
+//
+//				getHorizontalHessian(hh, FLT_EPSILON);
+//				getVerticalHessian(vv, FLT_EPSILON);
+//				getCrossHessian(hv, FLT_EPSILON);
+//				for (int y = 0, k = 0; (y < height); y++) {
+//					for (int x = 0; (x < width); x++, k++) {
+//						floatPixels[k] =
+//							(float)(0.5 * (floatPixelsHH[k] + floatPixelsVV[k]
+//							+ Math.sqrt(4.0 * floatPixelsHV[k]
+//							* floatPixelsHV[k]
+//							+ (floatPixelsHH[k] - floatPixelsVV[k])
+//							* (floatPixelsHH[k] - floatPixelsVV[k]))));
+//					}
+//					stepProgressBar();
+//				}
+//			}
+//			break;
+//		case SMALLEST_HESSIAN:
+//			{
+//				ImageProcessor hh = ip.duplicate();
+//				ImageProcessor vv = ip.duplicate();
+//				ImageProcessor hv = ip.duplicate();
+//				float[] floatPixels = (float[])ip.getPixels();
+//				float[] floatPixelsHH = (float[])hh.getPixels();
+//				float[] floatPixelsVV = (float[])vv.getPixels();
+//				float[] floatPixelsHV = (float[])hv.getPixels();
+//
+//				getHorizontalHessian(hh, FLT_EPSILON);
+//				getVerticalHessian(vv, FLT_EPSILON);
+//				getCrossHessian(hv, FLT_EPSILON);
+//				for (int y = 0, k = 0; (y < height); y++) {
+//					for (int x = 0; (x < width); x++, k++) {
+//						floatPixels[k] =
+//							(float)(0.5 * (floatPixelsHH[k] + floatPixelsVV[k]
+//							- Math.sqrt(4.0 * floatPixelsHV[k]
+//							* floatPixelsHV[k]
+//							+ (floatPixelsHH[k] - floatPixelsVV[k])
+//							* (floatPixelsHH[k] - floatPixelsVV[k]))));
+//					}
+//					stepProgressBar();
+//				}
+//			}
+//			break;
+//		case HESSIAN_ORIENTATION:
+//			{
+//				ImageProcessor hh = ip.duplicate();
+//				ImageProcessor vv = ip.duplicate();
+//				ImageProcessor hv = ip.duplicate();
+//				float[] floatPixels = (float[])ip.getPixels();
+//				float[] floatPixelsHH = (float[])hh.getPixels();
+//				float[] floatPixelsVV = (float[])vv.getPixels();
+//				float[] floatPixelsHV = (float[])hv.getPixels();
+//
+//				getHorizontalHessian(hh, FLT_EPSILON);
+//				getVerticalHessian(vv, FLT_EPSILON);
+//				getCrossHessian(hv, FLT_EPSILON);
+//				for (int y = 0, k = 0; (y < height); y++) {
+//					for (int x = 0; (x < width); x++, k++) {
+//						if (floatPixelsHV[k] < 0.0) {
+//							floatPixels[k] =
+//								(float)(-0.5 * Math.acos((floatPixelsHH[k]
+//								- floatPixelsVV[k])
+//								/ Math.sqrt(4.0 * floatPixelsHV[k]
+//								* floatPixelsHV[k]
+//								+ (floatPixelsHH[k] - floatPixelsVV[k])
+//								* (floatPixelsHH[k] - floatPixelsVV[k]))));
+//						}
+//						else {
+//							floatPixels[k] =
+//								(float)(0.5 * Math.acos((floatPixelsHH[k]
+//								- floatPixelsVV[k])
+//								/ Math.sqrt(4.0 * floatPixelsHV[k]
+//								* floatPixelsHV[k]
+//								+ (floatPixelsHH[k] - floatPixelsVV[k])
+//								* (floatPixelsHH[k] - floatPixelsVV[k]))));
+//						}
+//					}
+//					stepProgressBar();
+//				}
+//			}
+//			break;
+//		default:
+//			throw new IllegalArgumentException("Invalid operation");
+//	}
+//	ip.resetMinAndMax();
+//	imp.updateAndDraw();
+//} /* end doIt */
 
 /*------------------------------------------------------------------*/
 private void getColumn (
@@ -711,60 +701,60 @@ private void putRow (
 } /* end putRow */
 
 /*------------------------------------------------------------------*/
-private void resetProgressBar (
-) {
-	completed = 0;
+//private void resetProgressBar (
+//) {
+//	completed = 0;
 //	lastTime = System.currentTimeMillis();
 //	progressBar.show(2.0);
-} /* end resetProgressBar */
+//} /* end resetProgressBar */
 
 /*------------------------------------------------------------------*/
-private void setupProgressBar (
-) {
-	int height = imp.getHeight();
-	int width = imp.getWidth();
-
-	completed = 0;
-//	lastTime = System.currentTimeMillis();
-	switch (operation) {
-		case GRADIENT_MAGNITUDE:
-			processDuration = stackSize * (width + 2 * height);
-			break;
-		case GRADIENT_DIRECTION:
-			processDuration = stackSize * (width + 2 * height);
-			break;
-		case LAPLACIAN:
-			processDuration = stackSize * (width + 2 * height);
-			break;
-		case LARGEST_HESSIAN:
-			processDuration = stackSize * (2 * width + 3 * height);
-			break;
-		case SMALLEST_HESSIAN:
-			processDuration = stackSize * (2 * width + 3 * height);
-			break;
-		case HESSIAN_ORIENTATION:
-			processDuration = stackSize * (2 * width + 3 * height);
-			break;
-                case DIFFER_Y:
-                case DIFFER_X:
-                        processDuration = stackSize * ( width + 2 * height);
-			break;
-		default:
-			throw new IllegalArgumentException("Invalid operation");
-	}
-} /* end setupProgressBar */
-
-/*------------------------------------------------------------------*/
-private void stepProgressBar (
-) {
-	long timeStamp = System.currentTimeMillis();
-
-	completed = completed + 1;
-//	if (50L < (timeStamp - lastTime)) {
-//		lastTime = timeStamp;
-//		progressBar.show((double)completed / (double)processDuration);
+//private void setupProgressBar (
+//) {
+//	int height = imp.getHeight();
+//	int width = imp.getWidth();
+//
+//	completed = 0;
+////	lastTime = System.currentTimeMillis();
+//	switch (operation) {
+//		case GRADIENT_MAGNITUDE:
+//			processDuration = stackSize * (width + 2 * height);
+//			break;
+//		case GRADIENT_DIRECTION:
+//			processDuration = stackSize * (width + 2 * height);
+//			break;
+//		case LAPLACIAN:
+//			processDuration = stackSize * (width + 2 * height);
+//			break;
+//		case LARGEST_HESSIAN:
+//			processDuration = stackSize * (2 * width + 3 * height);
+//			break;
+//		case SMALLEST_HESSIAN:
+//			processDuration = stackSize * (2 * width + 3 * height);
+//			break;
+//		case HESSIAN_ORIENTATION:
+//			processDuration = stackSize * (2 * width + 3 * height);
+//			break;
+//                case DIFFER_Y:
+//                case DIFFER_X:
+//                        processDuration = stackSize * ( width + 2 * height);
+//			break;
+//		default:
+//			throw new IllegalArgumentException("Invalid operation");
 //	}
-} /* end stepProgressBar */
+//} /* end setupProgressBar */
+
+/*------------------------------------------------------------------*/
+//private void stepProgressBar (
+//) {
+//	long timeStamp = System.currentTimeMillis();
+//
+//	completed = completed + 1;
+////	if (50L < (timeStamp - lastTime)) {
+////		lastTime = timeStamp;
+////		progressBar.show((double)completed / (double)processDuration);
+////	}
+//} /* end stepProgressBar */
 
 /*------------------------------------------------------------------*/
 private void symmetricFirMirrorOnBounds (

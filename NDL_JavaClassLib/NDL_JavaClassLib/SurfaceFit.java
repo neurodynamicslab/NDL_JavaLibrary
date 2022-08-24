@@ -8,9 +8,60 @@ import Jama.Matrix;
  * @author balam
  */
 public class SurfaceFit {
-    int PolyOrderX, PolyOrderY;
+
+    /**
+     * @return the gFit
+     */
+    public double[][] getgFit() {
+        return gFit;
+    }
+
+    /**
+     * @param gFit the gFit to set
+     */
+    private void setgFit(double[][] gFit) {
+        this.gFit = gFit;
+    }
+    public SurfaceFit(){
+        setPolyOrderX(5);
+        setPolyOrderY(5);
+    }
+    public SurfaceFit(int PolyX, int PolyY){
+        this.setPolyOrderX(PolyOrderX);
+        this.setPolyOrderY(PolyOrderY);
+    }
+private double [][] gFit ;
+    /**
+     * @return the PolyOrderY
+     */
+    public int getPolyOrderY() {
+        return PolyOrderY;
+    }
+
+    /**
+     * @param PolyOrderY the PolyOrderY to set
+     */
+    public void setPolyOrderY(int PolyOrderY) {
+        this.PolyOrderY = PolyOrderY;
+    }
+
+    /**
+     * @return the PolyOrderX
+     */
+    public int getPolyOrderX() {
+        return PolyOrderX;
+    }
+
+    /**
+     * @param PolyOrderX the PolyOrderX to set
+     */
+    public void setPolyOrderX(int PolyOrderX) {
+        this.PolyOrderX = PolyOrderX;
+    }
+    private int PolyOrderX;
+    private int PolyOrderY;
     
-public  double[][] SurfaceFit( double[][] TheImage )
+public  double[][] FitSurface( double[][] TheImage )
 {
     int Nrows = TheImage.length;
     int Ncols = TheImage[0].length;
@@ -18,8 +69,8 @@ public  double[][] SurfaceFit( double[][] TheImage )
     int n=0;
     int r, c, cnt, i, j, k, MatVal, nCol;
     int Dim1, Dim2;
-    int PO_2xp1 = Math.max((2 * PolyOrderX + 1), (2 * PolyOrderY + 1));
-    int MatSize = (PolyOrderX+1)*(PolyOrderY+1);
+    int PO_2xp1 = Math.max((2 * getPolyOrderX() + 1), (2 * getPolyOrderY() + 1));
+    int MatSize = (getPolyOrderX()+1)*(getPolyOrderY()+1);
 
     // Create the x, y, and z arrays from which the image to be fitted
     double []X = new double[Npixels];
@@ -81,17 +132,17 @@ public  double[][] SurfaceFit( double[][] TheImage )
 
     // Create the patterns of "powers" for the X (horizontal) pixel indices
     //IJ.showProgress(2,6);
-    int iStart = 2 * PolyOrderX;
+    int iStart = 2 * getPolyOrderX();
     Dim1 = 0;
     while(Dim1<MatSize) {
-        for(i=0; i<(PolyOrderY+1); i++) {
+        for(i=0; i<(getPolyOrderY()+1); i++) {
             // A row of nnx[][] consists of an integer that starts with a value iStart and
             //  1) is repeated (PolyOrderX+1) times
             //  2) decremented by 1
             //  3) Repeat steps 1 and 2 for a total of (PolyOrderY+1) times
             nCol = 0;
-            for(j=0; j<(PolyOrderX+1); j++ ) {
-                for(k=0; k<(PolyOrderY+1); k++) {
+            for(j=0; j<(getPolyOrderX()+1); j++ ) {
+                for(k=0; k<(getPolyOrderY()+1); k++) {
                     aRow[nCol] = iStart - j;
                     nCol++;
                 }
@@ -109,16 +160,16 @@ public  double[][] SurfaceFit( double[][] TheImage )
     //IJ.showProgress(3,6);
     Dim1 = 0;
     while(Dim1<MatSize) {
-        iStart = 2 * PolyOrderY;
-        for(i=0; i<(PolyOrderY+1); i++) {
+        iStart = 2 * getPolyOrderY();
+        for(i=0; i<(getPolyOrderY()+1); i++) {
             // A row of nny[][] consists of an integer that starts with a value iStart and
             //  1) place in matrix
             //  2) decremented by 1
             //  3) 1 thru 2 are repeated for a total of (PolyOrderX+1) times
             //  4) 1 thru 3 are repeat a total of (PolyOrderY+1) times
             nCol = 0;
-            for(j=0; j<(PolyOrderX+1); j++ ) {
-                for(k=0; k<(PolyOrderY+1); k++) {
+            for(j=0; j<(getPolyOrderX()+1); j++ ) {
+                for(k=0; k<(getPolyOrderY()+1); k++) {
                     aRow[nCol] = iStart - k;
                     nCol++;
                 }
@@ -145,8 +196,8 @@ public  double[][] SurfaceFit( double[][] TheImage )
     //IJ.showProgress(4,6);
 	double[] Z_mat = new double[MatSize];
     c = 0;
-    for(i=PolyOrderX; i>=0; i--) {
-		for(j=PolyOrderY; j>=0; j--) {
+    for(i=getPolyOrderX(); i>=0; i--) {
+		for(j=getPolyOrderY(); j>=0; j--) {
             Z_mat[c] = Sxyz[i][j][1];
             c++;
         }
@@ -173,14 +224,15 @@ public  double[][] SurfaceFit( double[][] TheImage )
     //      + (G[2][2] y^2 + G[1][2] y^1 + G[0][2] y^0) x^2
     //      + (G[2][1] y^2 + G[1][1] y^1 + G[0][1] y^0) x^1
     //      + (G[2][0] y^2 + G[1][0] y^1 + G[0][0] y^0) x^0
-    double[][] Gfit = new double[PolyOrderY + 1][PolyOrderX + 1];
+    double[][] Gfit = new double[getPolyOrderY() + 1][getPolyOrderX() + 1];
     c = 0;
-    for(i=PolyOrderX; i>=0; i--) {
-		for(j=PolyOrderY; j>=0; j--) {
+    for(i=getPolyOrderX(); i>=0; i--) {
+		for(j=getPolyOrderY(); j>=0; j--) {
             Gfit[j][i] = Pfit[c];
             c++;
         }
     }
+    this.setgFit(Gfit);
     return ( Gfit );
 } 
 }
