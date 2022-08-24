@@ -30,7 +30,7 @@ public class SurfaceFit {
         this.setPolyOrderX(PolyOrderX);
         this.setPolyOrderY(PolyOrderY);
     }
-private double [][] gFit ;
+    private double [][] gFit ;
     /**
      * @return the PolyOrderY
      */
