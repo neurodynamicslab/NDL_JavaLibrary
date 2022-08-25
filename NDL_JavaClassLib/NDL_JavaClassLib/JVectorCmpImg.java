@@ -111,5 +111,7 @@ public class JVectorCmpImg {
         }
         return Images;
     }
-    
+    public ImageProcessor [] getProcessorArray(){
+        return heatMapImg;
+    }
 }

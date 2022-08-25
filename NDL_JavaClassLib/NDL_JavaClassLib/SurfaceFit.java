@@ -1,5 +1,9 @@
+package NDL_JavaClassLib;
 
 import Jama.Matrix;
+import ij.gui.Roi;
+import ij.process.FloatStatistics;
+import ij.process.ImageProcessor;
 
 
 
@@ -77,12 +81,17 @@ public  double[][] FitSurface( double[][] TheImage )
     double []Y = new double[Npixels];
     double []Z = new double[Npixels];
     cnt = 0;
+    double zVal;
     for(r=0; r<Nrows; r++) {
         for(c=0; c<Ncols; c++) {
-            X[cnt] = c;
-            Y[cnt] = r;
-            Z[cnt] = TheImage[r][c];
-            cnt++;
+            
+            zVal = TheImage[r][c];
+            if (zVal != Float.NaN && zVal != Double.NaN){
+                X[cnt] = c;
+                Y[cnt] = r;
+                Z[cnt] = zVal;
+                cnt++;
+            }
         }
     }
 
@@ -235,4 +244,31 @@ public  double[][] FitSurface( double[][] TheImage )
     this.setgFit(Gfit);
     return ( Gfit );
 } 
+public double[][] FitSurface(ImageProcessor ip, Roi sel, boolean selPixels){
+    
+    int width = ip.getWidth(), height  = ip.getHeight() ;
+    
+    double[][] surface = new double[height][width];
+       
+    ip.setRoi(sel);
+    double mean = new FloatStatistics(ip).mean;
+    
+    mean *= -1;
+    ip.add(mean);
+    
+    float[] pixelData ;// = new float[ip.getPixelCount()];
+    pixelData = (float [])ip.getPixelsCopy();
+    
+    byte[] maskData = (byte[])sel.getMask().getPixels();
+    double unSelval = (selPixels)? Double.NaN : 0;
+    int idx = 0;
+    
+    for(int row = 0 ; row < height ; row++){
+        for(int col = 0 ; col < width ; col++,idx = row*width + col)
+            surface[row][col] = (maskData[idx] == 0) ? unSelval : pixelData[idx];
+    }
+    
+    
+    return FitSurface(surface);
+}
 }
