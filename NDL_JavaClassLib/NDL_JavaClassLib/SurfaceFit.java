@@ -2,6 +2,7 @@ package NDL_JavaClassLib;
 
 import Jama.Matrix;
 import ij.gui.Roi;
+import ij.process.FloatProcessor;
 import ij.process.FloatStatistics;
 import ij.process.ImageProcessor;
 
@@ -65,7 +66,7 @@ public class SurfaceFit {
     private int PolyOrderX;
     private int PolyOrderY;
     
-public  double[][] FitSurface( double[][] TheImage )
+public  double[][] FitSurfaceCoeff( double[][] TheImage )
 {
     int Nrows = TheImage.length;
     int Ncols = TheImage[0].length;
@@ -244,7 +245,7 @@ public  double[][] FitSurface( double[][] TheImage )
     this.setgFit(Gfit);
     return ( Gfit );
 } 
-public double[][] FitSurface(ImageProcessor ip, Roi sel, boolean selPixels){
+public ImageProcessor FitSurface(ImageProcessor ip, Roi sel, boolean selPixels){
     
     int width = ip.getWidth(), height  = ip.getHeight() ;
     
@@ -267,8 +268,36 @@ public double[][] FitSurface(ImageProcessor ip, Roi sel, boolean selPixels){
         for(int col = 0 ; col < width ; col++,idx = row*width + col)
             surface[row][col] = (maskData[idx] == 0) ? unSelval : pixelData[idx];
     }
+    double[][] SurfFit = FitSurfaceCoeff(surface);
+    
+    FloatProcessor fitSurface = new FloatProcessor(width,height);
+    double ytemp, dtemp;
+    int Ny = sel.getBounds().height;                        // selection height 
+    int Nx = sel.getBounds().width;                         // selection width
+    //double[][] Svh = new double[Ny][Nx];
+        for(int iy=0; iy<Ny; iy++) {
+            for(int ix=0; ix<Nx; ix++) {
+                
+                dtemp = 0;
+                // Determine the value of the fit at pixel iy,ix
+                for(int powx=PolyOrderX; powx>=0; powx--) {
+                    ytemp = 0;
+                    for(int powy=PolyOrderY; powy>=0; powy--) {
+                        ytemp += SurfFit[powy][powx] * Math.pow((double)iy,(double)powy);
+                    }
+                    dtemp += ytemp * Math.pow((double)ix,(double)powx);
+                }
+                // Remember to add back the mean image value
+                //Svh[iy][ix] = dtemp + mean;
+                var pVal = (true)? dtemp+mean : 0;
+                fitSurface.putPixelValue(ix, iy, pVal);
+                
+            }
+        }
     
     
-    return FitSurface(surface);
+    
+    
+  return fitSurface;
 }
 }

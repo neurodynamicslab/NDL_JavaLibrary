@@ -1,4 +1,4 @@
-
+package NDL_JavaClassLib;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 
@@ -7,9 +7,11 @@ import ij.process.ImageProcessor;
  *
  * @author balam
  */
-public class ImageDiffentials {
+public class ImageDifferentials {
     
-    
+    public ImageDifferentials(){
+        
+    }
 //}
 /*=====================================================================
 | Version: April 6, 2014
