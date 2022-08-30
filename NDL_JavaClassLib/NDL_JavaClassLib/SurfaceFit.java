@@ -251,7 +251,7 @@ public ImageProcessor FitSurface(ImageProcessor ip, Roi sel, boolean selPixels){
     
     double[][] surface = new double[height][width];
        
-    ip.setRoi(sel);
+    //ip.setRoi(sel);
     double mean = new FloatStatistics(ip).mean;
     
     mean *= -1;
@@ -263,10 +263,16 @@ public ImageProcessor FitSurface(ImageProcessor ip, Roi sel, boolean selPixels){
     byte[] maskData = (byte[])sel.getMask().getPixels();
     double unSelval = (selPixels)? Double.NaN : 0;
     int idx = 0;
-    
-    for(int row = 0 ; row < height ; row++){
-        for(int col = 0 ; col < width ; col++,idx = row*width + col)
-            surface[row][col] = (maskData[idx] == 0) ? unSelval : pixelData[idx];
+    System.out.println("ArraySize "+ pixelData.length + "MaskSize "+maskData.length +"width="+width+" height= "+height + "");
+    var  rect = sel.getBounds();
+    for(int row = 0 ; row < rect.height ; row++){
+        for(int col = 0 ; col < rect.width ; col++){
+            idx = row*width + col;
+            if(idx < maskData.length)
+                surface[row][col] = (maskData[idx]== 0) ? unSelval : pixelData[idx];
+            else
+                surface[row][col] = unSelval;
+        }
     }
     double[][] SurfFit = FitSurfaceCoeff(surface);
     
