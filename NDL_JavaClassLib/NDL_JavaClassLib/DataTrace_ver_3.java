@@ -67,20 +67,19 @@ import ij.plugin.frame.*;*/
 public class DataTrace_ver_3 extends ArrayList<OrdXYErrData>{
 
     /**
-     * Call this function to read the data directly from text file.The data is supposed to be in the format of x and y co-ordinates listed in a time series stored as text(ascii) file.(i.e.x1 \t y1 \n x2 \t y2\n....EOF).x1,y1 co -respond to co-ordinates at time t1, x2, y2 at time t2.
-     * tn+1 is the time sample immediately after tn of an uniformly sampled data.
- The above is an example for data with no error bars (nDataSegments = 2), when the error bar is present then
+     * Call this function to read the data directly from text file.The data is supposed to be in the format of x and y co-ordinates listed in a time series stored as text(ascii) file.(i.e.x1 \t y1 \n x2 \t y2\n....EOF).x1,y1 co -respond to co-ordinates at time t1, x2, y2 at time t2.tn+1 is the time sample immediately after tn of an uniformly sampled data.
+     * The above is an example for data with no error bars (nDataSegments = 2), when the error bar is present then
  format would be (i.e. x1 \t y1 \t xEr \t yEr \t nPts \n ...EOF). xEr, yEr are the error bars and nPts are the 
  number points over which the mean is calculated. 
      * @param fileName is the name of text file from which to read the data.
-     * @param separator is the data separator used in the text file to separate x,y, xerr, yerr and no of points. 
-     *                  "\n" separates next line. 
+     * @param separator is the data separator used in the text file to separate x,y, xerr, yerr and no of points.     
+     * @param lineSeparator "\n" separates next line.
      * @param nDataSegments is the number of data segments present in a line
      * @param SD set it to true if the error bars represent standard deviation ignored if no error bars are used
      * @return returns true if import of data from file is successful false otherwise.
      */
    
-    public boolean populateData(String fileName,char separator,char lineSeparator, int nDataSegments, boolean SD){ 
+    public boolean populateData(String fileName, String separator,char lineSeparator, int nDataSegments, boolean SD){ 
         FileReader reader;
         boolean warning = false;
         
@@ -107,8 +106,11 @@ public class DataTrace_ver_3 extends ArrayList<OrdXYErrData>{
                         if ( c != lineSeparator){
                             currLine += (char)c;
                         }else{
-                            dataSeg = currLine.split(new String(""+separator));
-                            
+                            dataSeg = currLine.split((""+separator));
+                            if(dataSeg.length != nDataSegments){
+                                System.out.print("Error reading data: Format mismatch"+ currLine);
+                                return false;
+                            }
                             xData = Double.parseDouble(dataSeg[0]);
                             yData = Double.parseDouble(dataSeg[1]);
                             
@@ -167,7 +169,7 @@ public class DataTrace_ver_3 extends ArrayList<OrdXYErrData>{
       * @return :True when data is successfully read false when it fails
       */  
     public boolean populateData(String fileName,int nDataSegments,boolean SD){
-        return populateData(fileName, '\t','\n',nDataSegments,SD);
+        return populateData(fileName, ""+'\t','\n',nDataSegments,SD);
     }
     /**
      * @return the xRoundoff

@@ -139,16 +139,16 @@ public class JHeatMapArray extends Object{
     public double [] to1DArray(){
         double [] OneD = new double[xRes*yRes];
         int xIdx = 0, yIdx = 0;
-        for(double [] x : pixelArray){
-            for(double val : x){
+        for(double [] Cols : pixelArray){
+            for(double val : Cols){
                 if(xIdx < xRes && yIdx < yRes){
-                    OneD[yIdx + (xIdx*yRes)] = val;
+                    OneD[xIdx + (yIdx*xRes)] = val;
     //                if(val > 0)
     //                    System.out.print(""+xIdx+"\t"+yIdx+"\t"+(xIdx + (yIdx*xRes))+"\n");
                     yIdx++;
                 }else{
                     
-                    System.out.println("HeatMapArray :"+pixelArray.length+" X "+x.length+"):"+"x locatiaon of = "+xIdx + "y location of = "+ yIdx + " Exceeds the resolution :"+xRes+" X " + yRes);
+                    System.out.println("HeatMapArray :"+pixelArray.length+" X "+Cols.length+"):"+"x locatiaon of = "+xIdx + "y location of = "+ yIdx + " Exceeds the resolution :"+xRes+" X " + yRes);
                             
                 }
             }
