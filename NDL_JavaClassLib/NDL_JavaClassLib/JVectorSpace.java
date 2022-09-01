@@ -134,8 +134,9 @@ public class JVectorSpace {
         javax.swing.JOptionPane.showMessageDialog
                     (null, "Please assign resolution of the image/array first\n");
         return null;
-    }           
-    pixels = new double[getxRes() * getyRes()];
+    }     
+    int maxIdx = getxRes() * getyRes();
+    pixels = new double[maxIdx];
     
 //    int pixelCount = 0, arrayIdx;
 //        //System.out.print("xRes = "+getxRes()+"\n");
@@ -161,14 +162,24 @@ public class JVectorSpace {
         tempArray[currX][currY] = (double)getVectors().get(dataIdx).getComponent(Idx);
         dataIdx++;
     }
-    int xIdx = 0, yIdx = 0;
-    for(double[] Y : tempArray){
-        for(double Val : Y){
-            pixels[xIdx + yIdx*getxRes()] += Val;
-            xIdx++;
+    int nRow = 0, nCol = 0;
+    int arrayIdx;
+    
+    for(double[] Cols: tempArray){  //length shld be of yRes but observed length is 1920 (xRes)
+        for(double Val : Cols){ //length shld be of  xRes but observed length is 1080 (yRes)
+            arrayIdx = nCol + nRow*getxRes();
+            if(arrayIdx < maxIdx){
+                pixels[arrayIdx] += Val;
+                nRow++;
+            }
+            else{
+                System.out.print("Length of rows is: "+ Cols.length);
+                System.out.println("VectorSpace:"+"xLoc of :"+nRow +"yLoc of :" + nCol + "exceeds the xRes x yRes of:" + xRes +" X "+yRes);
+            }
+                
         }
-        yIdx ++;
-        xIdx = 0;
+        nCol ++;
+        nRow = 0;
     }
     return pixels;
     }
