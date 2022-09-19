@@ -305,10 +305,10 @@ public ImageProcessor FitSurface(ImageProcessor ip, Roi sel, boolean selPixels){
         }
     }
     double[][] SurfFit = FitSurfaceCoeff(surface);
-    int Idx = 0;
-    for(double [] coe :SurfFit)
-        for(double val : coe)
-            System.out.print(++Idx + " _= "+ val);
+//    int Idx = 0;
+//    for(double [] coe :SurfFit)
+//        for(double val : coe)
+//            System.out.print(++Idx + " _= "+ val);
     
     FloatProcessor fitSurface = new FloatProcessor(width,height);
     double ytemp, dtemp;

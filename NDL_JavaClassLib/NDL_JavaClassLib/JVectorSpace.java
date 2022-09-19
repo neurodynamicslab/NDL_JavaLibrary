@@ -374,7 +374,7 @@ public class JVectorSpace {
      
      double dotProd,mag,angle;
      int idx = 0,compCount;
-     JVector tarVector;
+     JVector tarVector, prjVector;
      ArrayList<Number> tarCord = new ArrayList(), curCord ;//= new Number[space.size()];
      ArrayList projVects = new ArrayList();
      double result;
@@ -383,18 +383,19 @@ public class JVectorSpace {
            curCord = space.get(idx++).getXY();
            compCount = 0;
            for(Number N : curCord){
-               result = positionVector.getComponent(compCount++).doubleValue() - N.doubleValue(); 
-               tarCord.add((Double)result);
+               result = positionVector.getComponent(compCount).doubleValue() - N.doubleValue(); 
+               tarCord.add(compCount,(Double)result);
+               compCount++;
            }
            tarVector = new JVector(tarCord);   
            
            dotProd = vect.dotProduct(tarVector);
            mag = dotProd/tarVector.getL2Norm();
+           angle =  Math.atan2(tarVector.getComponent(1).doubleValue(),tarVector.getComponent(0).doubleValue());        //vect.findAngle(tarVector); //Math.acos(tarVector.getComponent(0).doubleValue()/tarVector.getL2Norm());
+           prjVector = new J2DVectorPolar(mag,angle).getCartVect();
+           projVects.add(prjVector);
            
-           angle = Math.acos(tarVector.getComponent(0).doubleValue()/tarVector.getL2Norm());
-           projVects.add(new J2DVectorPolar(mag,angle).getCartVect());
-           
-           //System.out.println(""+mag+"\t"+angle);
+          //System.out.println(""+mag+"\t"+angle+"\t\t"+ mag*Math.cos(angle)+"\t"+mag*Math.sin(angle));
      }
      projection.vectors = projVects;
      
