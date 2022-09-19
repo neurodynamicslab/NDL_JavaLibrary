@@ -362,24 +362,39 @@ public class JVectorSpace {
      
      return scaledSpace;
  }
- public JVectorSpace getProjections( JVector Vector, boolean along){
-     makeProjections(Vector, along);
+ public JVectorSpace getProjections2point( JVector Vector, boolean along){
+     makeProjections2point(Vector, along);
      return projection;
  }
  
- public void makeProjections(JVector Vector, boolean along){
+ public void makeProjections2point(JVector positionVector, boolean along){
      
      projection = new JVectorSpace(this);
      
      
      double dotProd,mag,angle;
-     
+     int idx = 0,compCount;
+     JVector tarVector;
+     ArrayList<Number> tarCord = new ArrayList(), curCord ;//= new Number[space.size()];
      ArrayList projVects = new ArrayList();
-     for (var vect : projection.vectors){
-           dotProd = vect.dotProduct(Vector);
-           mag = vect.getL2Norm()*Vector.getL2Norm();
-           angle = Math.acos(dotProd/mag);
-           projVects.add(new J2DVectorPolar(dotProd,angle).getCartVect());
+     double result;
+     for (var vect : this.vectors){
+         
+           curCord = space.get(idx++).getXY();
+           compCount = 0;
+           for(Number N : curCord){
+               result = positionVector.getComponent(compCount++).doubleValue() - N.doubleValue(); 
+               tarCord.add((Double)result);
+           }
+           tarVector = new JVector(tarCord);   
+           
+           dotProd = vect.dotProduct(tarVector);
+           mag = dotProd/tarVector.getL2Norm();
+           
+           angle = Math.acos(tarVector.getComponent(0).doubleValue()/tarVector.getL2Norm());
+           projVects.add(new J2DVectorPolar(mag,angle).getCartVect());
+           
+           //System.out.println(""+mag+"\t"+angle);
      }
      projection.vectors = projVects;
      

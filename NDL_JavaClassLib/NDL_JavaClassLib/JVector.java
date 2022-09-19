@@ -122,9 +122,9 @@ public class JVector<N extends Number> {
     public double dotProduct(JVector secondVector){
         double product = 1.0;
         int idx = 0;
-        if(this.Components.size() != secondVector.getNComponents()){
+        if(this.getNComponents() == secondVector.getNComponents()){
             for(Number N : Components){
-                product += ((double)N * (double)secondVector.getComponent(idx));
+                product += (N.doubleValue() * secondVector.getComponent(idx).doubleValue());
                 idx++;
             }
             return product;
