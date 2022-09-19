@@ -391,7 +391,11 @@ public class JVectorSpace {
            
            dotProd = vect.dotProduct(tarVector);
            mag = dotProd/tarVector.getL2Norm();
-           angle =  Math.atan2(tarVector.getComponent(1).doubleValue(),tarVector.getComponent(0).doubleValue());        //vect.findAngle(tarVector); //Math.acos(tarVector.getComponent(0).doubleValue()/tarVector.getL2Norm());
+           angle =  Math.atan(tarVector.getComponent(1).doubleValue()/tarVector.getComponent(0).doubleValue());        //vect.findAngle(tarVector); //Math.acos(tarVector.getComponent(0).doubleValue()/tarVector.getL2Norm());
+          // angle *= -1;                 //Needed as the origin in our image is at top left corner and y axis
+                                        // increases downwards. The angle returned by tan2 is angle from x - axis 
+                                        // and inreases towards the positive direction of y axis. Thus in our system 
+                                        // this returns the negtive of the angle. 
            prjVector = new J2DVectorPolar(mag,angle).getCartVect();
            projVects.add(prjVector);
            
