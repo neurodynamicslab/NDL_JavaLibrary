@@ -253,12 +253,12 @@ public  double[][] FitSurfaceCoeff( double[][] TheImage )
     
     return ( Gfit );
 } 
-public ImageProcessor FitSurface(ImageProcessor ip, Roi sel, boolean selPixels){
+public FloatProcessor FitSurface(ImageProcessor ip, Roi sel, boolean selPixels){
     double mean ;
     
     var fp = new FloatStatistics(ip);
     mean = fp.mean;
-    
+    var orgMean = mean;
     int width = ip.getWidth(), height  = ip.getHeight();
     int rx, ry, rw, rh;
     double[][] surface = new double[height][width];
@@ -272,17 +272,20 @@ public ImageProcessor FitSurface(ImageProcessor ip, Roi sel, boolean selPixels){
         rw = bRect.width;
         rh = bRect.height;
     }else{                                   //selection is not provided by the user
-                                            //will include the entire image processor
+                                            
         Rectangle rectRoi = ip.getRoi();  
         rx = rectRoi.x;
         ry = rectRoi.y;
         rw = rectRoi.width;
         rh = rectRoi.height;
+        
         //sel = new Roi(rx,ry,rw,rh);
     }
     
     mean *= -1;
     ip.add(mean);
+    
+    System.out.println("Mean to be added: "+mean+" Mean on entry: "+orgMean*-1+" Using selection "+ (sel != null));
 //    ImagePlus imp = new ImagePlus("Aft Mean sub");
 //    imp.setProcessor(ip);
 //    imp.setTitle("Aft Mean sub");
@@ -301,7 +304,7 @@ public ImageProcessor FitSurface(ImageProcessor ip, Roi sel, boolean selPixels){
        // idx = row*width + rx;
         int midx = my*rw;
         for(int col = rx, mx = 0 ; col < (rx+rw) ; mx++, col++){   
-                surface[row][col] = (maskData == null || maskData[midx++] != 0) ? ip.getPixelValue(col,row) : unSelval;      
+                surface[row][col] = (maskData == null || maskData[midx++] != 0) ?(double) ip.getPixelValue(col,row): unSelval;      
         }
     }
     double[][] SurfFit = FitSurfaceCoeff(surface);
@@ -310,7 +313,8 @@ public ImageProcessor FitSurface(ImageProcessor ip, Roi sel, boolean selPixels){
 //        for(double val : coe)
 //            System.out.print(++Idx + " _= "+ val);
     
-    FloatProcessor fitSurface = new FloatProcessor(width,height);
+    FloatProcessor fitSurface = new FloatProcessor(rw,rh);
+    //float[][] pixelVal = new float[rw][rh] ;
     double ytemp, dtemp;
     int Ny = rh ;//sel.getBounds().height;                        // selection height 
     int Nx = rw ;//sel.getBounds().width;                         // selection width
@@ -332,9 +336,11 @@ public ImageProcessor FitSurface(ImageProcessor ip, Roi sel, boolean selPixels){
                 //Svh[iy][ix] = dtemp + mean;
                 var pVal = (true)? dtemp+mean : 0;
                 fitSurface.putPixelValue(ix, iy, pVal);
+                //pixelVal[ix][iy] = (float) pVal;
                 
             }
-        }     
+        } 
+        //FloatProcessor fitSurface = new FloatProcessor(pixelVal);
   return fitSurface;
  }
 }
