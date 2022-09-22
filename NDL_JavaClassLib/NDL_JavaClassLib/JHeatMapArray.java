@@ -14,6 +14,20 @@ import java.util.ArrayList;
 public class JHeatMapArray extends Object{
 
     /**
+     * @return the multiplier
+     */
+    public double getMultiplier() {
+        return multiplier;
+    }
+
+    /**
+     * @param multiplier the multiplier to set
+     */
+    public void setMultiplier(double multiplier) {
+        this.multiplier = multiplier;
+    }
+
+    /**
      * @return the xRes
      */
     public int getxRes() {
@@ -83,6 +97,7 @@ public class JHeatMapArray extends Object{
     
     private int xRes = 0;
     private int yRes = 0;
+    private double multiplier = 10;
     private double [][] pixelArray;
     private DataTrace_ver_3 timeSeries;
     
@@ -116,7 +131,7 @@ public class JHeatMapArray extends Object{
             x = (int)Math.round(xDouble);
             y = (int)Math.round(yDouble);
             if(x <= xRes && y <= yRes && x >= 0 && y >= 0)
-                pixelArray [x][y] += 1;
+                pixelArray [x][y] += (1*getMultiplier());
             Idx++;
         }
         

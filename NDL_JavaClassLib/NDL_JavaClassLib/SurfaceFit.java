@@ -272,7 +272,7 @@ public FloatProcessor FitSurface(ImageProcessor ip, Roi sel, boolean selPixels){
         ry = bRect.y;
         rw = bRect.width;
         rh = bRect.height;
-        selVal = (selPixels)? Double.NaN : 0;
+        selVal = (selPixels)? Double.NaN : 0;   //roi is provided but unsampled space inside the rect sele is filled with 0
     }else{                                   //selection is not provided by the user
                                             
         Rectangle rectRoi = ip.getRoi();  
