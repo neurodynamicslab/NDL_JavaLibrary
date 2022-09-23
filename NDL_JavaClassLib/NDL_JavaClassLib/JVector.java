@@ -25,19 +25,23 @@ public class JVector<N extends Number> {
         Components = new ArrayList<>();
         Components.add(Xcord);
         Components.add(Ycord);
+        this.calculateNorm();
     }
     public JVector(N [] C){
         Components = new ArrayList<>();
         Components.addAll(Arrays.asList(C));
+        this.calculateNorm();
     }
    public JVector(ArrayList<N> C){
        Components = new ArrayList<>();
        for(N c : C)
             Components.add(c);
+       this.calculateNorm();
    }
-   public void addVectors(ArrayList<N> C){
+   public void addMoreComp(ArrayList<N> C){
        for(N c : C)
             Components.add(c);
+       this.calculateNorm();
    }
     /**
      * @return the normsReady
@@ -113,7 +117,7 @@ public class JVector<N extends Number> {
             Double comp = N.doubleValue();
             
             absSum += java.lang.Math.abs(comp);
-            sumSq += comp * comp;
+            sumSq += (comp * comp);
             max = comp > max ? comp : max ;
          //nComponents++;
         }
@@ -128,8 +132,10 @@ public class JVector<N extends Number> {
                 idx++;
             }
             return product;
-        }else 
+        }else {
+            System.out.println("Mismatch in components of vectors:\t"+this.getNComponents()+"\t"+secondVector.getNComponents());
             return -1;
+        }
     }
     public double findAngle(JVector targetVector){
         double angle; 
@@ -149,7 +155,7 @@ public class JVector<N extends Number> {
         for(var N1 : vect1.Components) 
             Comp.add((Double)N1 + (Double)vect2.getComponent(Idx++));
         
-        sum.addVectors(Comp);
+        sum.addMoreComp(Comp);
         return sum;
     }
     public void add2this(JVector vect){
@@ -163,7 +169,8 @@ public class JVector<N extends Number> {
         ArrayList scaledC = new ArrayList();
         int Idx = 0;
        for(Number x : Components){
-           scaledC.add(Idx, (Double)Components.get(Idx)*(Double)scale);
+           //scaledC.add(Idx, (Double)Components.get(Idx)*(Double)scale);
+           scaledC.add(x.doubleValue() * scale.doubleValue());
            Idx++;
        }
         scaledVect = new JVector(scaledC);

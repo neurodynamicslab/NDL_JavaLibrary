@@ -15,6 +15,41 @@ import java.util.ArrayList;
 public class JVectorSpace {
 
     /**
+     * @return the projection
+     */
+    public JVectorSpace getProjection() {
+        return projection;
+    }
+
+    /**
+     * @return the projectionStatus
+     */
+    public boolean isProjectionStatus() {
+        return projectionStatus;
+    }
+
+    /**
+     * @param projectionStatus the projectionStatus to set
+     */
+    public void setProjectionStatus(boolean projectionStatus) {
+        this.projectionStatus = projectionStatus;
+    }
+
+    /**
+     * @return the prjTarget
+     */
+    public JVector getPrjTarget() {
+        return prjTarget;
+    }
+
+    /**
+     * @param prjTarget the prjTarget to set
+     */
+    public void setPrjTarget(JVector prjTarget) {
+        this.prjTarget = prjTarget;
+    }
+
+    /**
      * @param nComp the nComp to set
      */
     private void setnComp(int nComp) {
@@ -117,7 +152,8 @@ public class JVectorSpace {
     private int xRes, yRes,xMax,yMax;
     private boolean resMismatch;
     private int nComp; //Helps to keep track of dimensionality of the vectors space (i.e all vectors have same number of components 
-   
+    private boolean projectionStatus = false;
+    private JVector prjTarget;
     private JVectorSpace projection;
     
  public double[] getCompArray(int Idx){
@@ -364,14 +400,15 @@ public class JVectorSpace {
  }
  public JVectorSpace getProjections2point( JVector Vector, boolean along){
      makeProjections2point(Vector, along);
-     return projection;
+     this.setPrjTarget(Vector);
+     this.setProjectionStatus(true);
+     return getProjection();
  }
  
  public void makeProjections2point(JVector positionVector, boolean along){
      
-     projection = new JVectorSpace(this);
      
-     
+    
      double dotProd,mag,angle;
      int idx = 0,compCount;
      JVector tarVector, prjVector;
@@ -382,6 +419,7 @@ public class JVectorSpace {
          
            curCord = space.get(idx++).getXY();
            compCount = 0;
+           tarCord = new ArrayList();
            for(Number N : curCord){
                result = positionVector.getComponent(compCount).doubleValue() - N.doubleValue(); 
                tarCord.add(compCount,(Double)result);
@@ -399,10 +437,11 @@ public class JVectorSpace {
            prjVector = new J2DVectorPolar(mag,angle).getCartVect();
            projVects.add(prjVector);
            
-          //System.out.println(""+mag+"\t"+angle+"\t\t"+ mag*Math.cos(angle)+"\t"+mag*Math.sin(angle));
+          //System.out.println(prjVector.getComponent(0)+"\t"+prjVector.getComponent(1));
      }
+     projection = new JVectorSpace(this);
      projection.vectors = projVects;
-     
+     System.out.println("Finsihed the dataset projections\n");
  }
 
 }
