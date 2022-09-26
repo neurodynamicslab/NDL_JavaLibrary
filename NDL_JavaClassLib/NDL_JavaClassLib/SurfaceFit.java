@@ -254,15 +254,28 @@ public  double[][] FitSurfaceCoeff( double[][] TheImage )
     
     return ( Gfit );
 } 
-public FloatProcessor FitSurface(ImageProcessor ip, Roi sel, boolean selPixels){
+/**It is the workhorse of class. This prepares the data for fitting a polynomial and calls the  FitSurfaceCoef()
+ * to obtain the fit parameters. In this case these are the coefficients of the polynomial. 
+ * The polyOrder needs to be set or default of order 5 is assumed. 
+ * 
+ * @param ip    The image processor (ImageJ) for the image
+ * @param sel   An Roi object (ImageJ) that represents the area of interest (read on for the options and its meaning)
+ * @param selPixels A boolean together with Roi defines specific cases as listed below:
+ * @return It returns a float processor representing the image that is fit
+ * 
+ * Specific Cases: If sel is null false square/rectangle region of interest as such 
+ * sel has a Roi and selPixels is false square/rectangle region of interest with 0 for pixels of unmasked
+ * sel has Roi and selpixels is true just the pixels that are selected by roi mask
+ **/
+public FloatProcessor FitSurface(ImageProcessor sp, Roi sel, boolean selPixels){
     double mean ;
-    
+    var ip = sp.convertToFloatProcessor();
     var fp = new FloatStatistics(ip);
     mean = fp.mean;
     var orgMean = mean;
     int width = ip.getWidth(), height  = ip.getHeight();
     int rx, ry, rw, rh;
-    double[][] surface = new double[height][width];
+    
     double selVal = 0;
     if(sel != null ){
         ip.setRoi(sel);
@@ -283,7 +296,7 @@ public FloatProcessor FitSurface(ImageProcessor ip, Roi sel, boolean selPixels){
         
         //sel = new Roi(rx,ry,rw,rh);
     }
-    
+    double[][] surface = new double[rh][rw];
     mean *= -1;
     ip.add(mean);
     

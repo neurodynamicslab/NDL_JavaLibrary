@@ -190,22 +190,26 @@ public class JVectorSpace {
 //    }
 
     double[][] tempArray = new double[getxRes()][getyRes()];
+    int[][] nData = new int[getxRes()][getyRes()];
     int currX, currY;
     int dataIdx = 0;
     for(OrdXYData curPixel : getSpace()){
         currX = (int)Math.round((double)curPixel.getX());
         currY = (int)Math.round((double)curPixel.getY());
-        tempArray[currX][currY] = (double)getVectors().get(dataIdx).getComponent(Idx);
+        tempArray[currX][currY] += getVectors().get(dataIdx).getComponent(Idx).doubleValue();
+        nData[currX][currY] += 1;
         dataIdx++;
     }
     int nRow = 0, nCol = 0;
     int arrayIdx;
-    
+    int no = 0;
     for(double[] Cols: tempArray){  //length shld be of yRes but observed length is 1920 (xRes)
         for(double Val : Cols){ //length shld be of  xRes but observed length is 1080 (yRes)
             arrayIdx = nCol + nRow*getxRes();
+            no = nData[nRow][nCol];
+            no = no == 0 ? 1 : no;
             if(arrayIdx < maxIdx){
-                pixels[arrayIdx] += Val;
+                pixels[arrayIdx] = Val/no ;
                 nRow++;
             }
             else{
@@ -352,7 +356,7 @@ public class JVectorSpace {
          xIdx = (int) Math.round((Double)XYCord.getX());
          yIdx = (int) Math.round((Double)XYCord.getY());
          try{
-         scale = (Double)scalingMat[xIdx][yIdx]; 
+         scale = scalingMat[xIdx][yIdx].doubleValue(); 
          }
          catch(Exception e){
              System.out.println(e.getMessage()+ " Resolution mismatch !");
