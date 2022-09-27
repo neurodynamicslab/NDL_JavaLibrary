@@ -366,9 +366,9 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel, boolean selPixels){
             }
         } 
         //FloatProcessor fitSurface = new FloatProcessor(pixelVal);
-        ImagePlus fitTst = new ImagePlus("Tst");
-        fitTst.setProcessor(fitSurface);
-        fitTst.show();
+//        ImagePlus fitTst = new ImagePlus("Tst");
+//        fitTst.setProcessor(fitSurface);
+//        fitTst.show();
         
   return fitSurface;
  }

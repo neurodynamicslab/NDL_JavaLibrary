@@ -200,23 +200,19 @@ public class JVectorSpace {
         currX = (int)Math.round((double)curPixel.getX());
         currY = (int)Math.round((double)curPixel.getY());
         tempArray[currX][currY] += getVectors().get(dataIdx).getComponent(Idx).doubleValue();
-        nData[currX][currY] += 1;
+        
         dataIdx++;
     }
     int nRow = 0, nCol = 0;
     int arrayIdx;
     float no = 0;
-    ImagePlus testResi = new ImagePlus("TestResi");
-    testResi.setProcessor(new FloatProcessor(nData));
-    FileSaver fs = new FileSaver(testResi);
-    fs.saveAsTiff("TestResi");
-    for(double[] Cols: tempArray){  //length shld be of yRes but observed length is 1920 (xRes)
-        for(double Val : Cols){ //length shld be of  xRes but observed length is 1080 (yRes)
+
+    for(double[] Cols: tempArray){  
+        for(double Val : Cols){ 
             arrayIdx = nCol + nRow*getxRes();
-            no = nData[nRow][nCol];
-            var norm = (no == 0) ? 1 : no;
+            
             if(arrayIdx < maxIdx){
-                pixels[arrayIdx] = (Val/norm) ;
+                pixels[arrayIdx] = Val ;
                 nRow++;
             }
             else{
