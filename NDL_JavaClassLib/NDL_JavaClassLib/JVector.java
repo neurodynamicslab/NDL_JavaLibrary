@@ -166,7 +166,7 @@ public class JVector<N extends Number> {
     }
     public  JVector getScaledVector(N scale){
         JVector scaledVect;
-        ArrayList scaledC = new ArrayList();
+        ArrayList<Number> scaledC = new ArrayList();
         int Idx = 0;
        for(Number x : Components){
            //scaledC.add(Idx, (Double)Components.get(Idx)*(Double)scale);

@@ -1,5 +1,8 @@
 package NDL_JavaClassLib;
 
+import ij.ImagePlus;
+import ij.io.FileSaver;
+import ij.process.FloatProcessor;
 import java.util.ArrayList;
 
 /*
@@ -190,7 +193,7 @@ public class JVectorSpace {
 //    }
 
     double[][] tempArray = new double[getxRes()][getyRes()];
-    int[][] nData = new int[getxRes()][getyRes()];
+    float [][] nData = new float[getxRes()][getyRes()];
     int currX, currY;
     int dataIdx = 0;
     for(OrdXYData curPixel : getSpace()){
@@ -202,14 +205,18 @@ public class JVectorSpace {
     }
     int nRow = 0, nCol = 0;
     int arrayIdx;
-    int no = 0;
+    float no = 0;
+    ImagePlus testResi = new ImagePlus("TestResi");
+    testResi.setProcessor(new FloatProcessor(nData));
+    FileSaver fs = new FileSaver(testResi);
+    fs.saveAsTiff("TestResi");
     for(double[] Cols: tempArray){  //length shld be of yRes but observed length is 1920 (xRes)
         for(double Val : Cols){ //length shld be of  xRes but observed length is 1080 (yRes)
             arrayIdx = nCol + nRow*getxRes();
             no = nData[nRow][nCol];
-            no = no == 0 ? 1 : no;
+            var norm = (no == 0) ? 1 : no;
             if(arrayIdx < maxIdx){
-                pixels[arrayIdx] = Val/no ;
+                pixels[arrayIdx] = (Val/norm) ;
                 nRow++;
             }
             else{

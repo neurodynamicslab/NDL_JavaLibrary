@@ -301,6 +301,7 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel, boolean selPixels){
     ip.add(mean);
     
     System.out.println("Mean to be added: "+mean+" Mean on entry: "+orgMean*-1+" Using selection "+ (sel != null)+"Mask is "+(ip.getMask()!= null));
+    System.out.println("The width is :" + rw +", "+rx+"The height is "+ rh +"," +ry);
 //    ImagePlus imp = new ImagePlus("Aft Mean sub");
 //    imp.setProcessor(ip);
 //    imp.setTitle("Aft Mean sub");
@@ -318,16 +319,16 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel, boolean selPixels){
         for(int row = ry, my = 0 ; row < (ry+rh) ; my++, row++){
            // idx = row*width + rx;
             //int midx = my*rw;
-            for(int col = rx /*,mx = 0 */; col < (rx+rw) ; /*mx++,*/ col++){   
-                    surface[row][col] = (double)ip.getPixelValue(col, row);//(maskData == null || maskData[midx++] != 0) ?(double) ip.getPixelValue(col,row): unSelval;      
+            for(int col = rx ,mx = 0 ; col < (rw+rx) ; mx++, col++){   
+                    surface[my][mx] = (double)ip.getPixelValue(col, row);//(maskData == null || maskData[midx++] != 0) ?(double) ip.getPixelValue(col,row): unSelval;      
             }
         }
     }else{
-        for(int row = ry, my = 0 ; row < (ry+rh) ; my++, row++){
+        for(int row = ry, my = 0 ; row < ry ; my++, row++){
            // idx = row*width + rx;
             int midx = my*rw;
-            for(int col = rx, mx = 0 ; col < (rx+rw) ; mx++, col++){   
-                    surface[row][col] = (maskData == null || maskData[midx++] != 0) ?(double) ip.getPixelValue(col,row): selVal;/*unSelval*/;      
+            for(int col = rx, mx = 0 ; col < rx ; mx++, col++){   
+                    surface[my][mx] = (maskData == null || maskData[midx++] != 0) ?(double) ip.getPixelValue(col,row): selVal;/*unSelval*/;      
             }
         }
     }
@@ -365,6 +366,10 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel, boolean selPixels){
             }
         } 
         //FloatProcessor fitSurface = new FloatProcessor(pixelVal);
+        ImagePlus fitTst = new ImagePlus("Tst");
+        fitTst.setProcessor(fitSurface);
+        fitTst.show();
+        
   return fitSurface;
  }
 }
