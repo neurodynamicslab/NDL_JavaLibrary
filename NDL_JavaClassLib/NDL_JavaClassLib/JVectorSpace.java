@@ -443,12 +443,12 @@ public class JVectorSpace {
                                         // this returns the negtive of the angle. 
            prjVector = new J2DVectorPolar(mag,angle).getCartVect();
            projVects.add(prjVector);
-           
-          //System.out.println(prjVector.getComponent(0)+"\t"+prjVector.getComponent(1));
+//           System.out.println(positionVector.getComponent(0)+"\t"+positionVector.getComponent(1));
+//           System.out.println(prjVector.getComponent(0)+"\t"+prjVector.getComponent(1));
      }
      projection = new JVectorSpace(this);
      projection.vectors = projVects;
-     System.out.println("Finsihed the dataset projections\n");
+     System.out.println("Finished the dataset projections\n");
  }
 
 }

@@ -86,7 +86,7 @@ public  double[][] FitSurfaceCoeff( double[][] TheImage )
     double []Z = new double[Npixels];
     cnt = 0;
     double zVal;
-    //double sum =0;
+    double sum =0;
    // System.out.print("X_Order_: "+getPolyOrderX()+" Y Order : " + getPolyOrderY());
     for(r=0; r<Nrows; r++) {
         for(c=0; c<Ncols; c++) {
@@ -97,11 +97,11 @@ public  double[][] FitSurfaceCoeff( double[][] TheImage )
                 Y[cnt] = r;
                 Z[cnt] = zVal;
                 cnt++;
-                //sum += zVal;
+                sum += zVal;
             }
         }
     }
-//System.out.println("Number of non NaN is :"+cnt+" Out of: "+Nrows*Ncols);
+System.out.println("Number of non NaN is :"+cnt+" Out of: "+Nrows*Ncols);
     // Notation:
     //  1)  The matrix [XY] is made up of sums (over all the pixels) of the
     //      row & column indices raised to various powers.  For example,
@@ -275,7 +275,7 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel, boolean selPixels){
     var orgMean = mean;
     int width = ip.getWidth(), height  = ip.getHeight();
     int rx, ry, rw, rh;
-    
+    byte[] maskData = null; 
     double selVal = 0;
     if(sel != null ){
         ip.setRoi(sel);
@@ -285,6 +285,7 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel, boolean selPixels){
         ry = bRect.y;
         rw = bRect.width;
         rh = bRect.height;
+        maskData = ip.getMaskArray();//(byte [])sel.getMask().getPixels();
         selVal = (selPixels)? Double.NaN : 0;   //roi is provided but unsampled space inside the rect sele is filled with 0
     }else{                                   //selection is not provided by the user
                                             
@@ -293,7 +294,7 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel, boolean selPixels){
         ry = rectRoi.y;
         rw = rectRoi.width;
         rh = rectRoi.height;
-        
+     //   selVal = (selPixels)? Double.NaN:0;
         //sel = new Roi(rx,ry,rw,rh);
     }
     double[][] surface = new double[rh][rw];
@@ -310,12 +311,12 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel, boolean selPixels){
 //    float[] pixelData ;// = new float[ip.getPixelCount()];
 //    pixelData = (float [])ip.getPixelsCopy();
     
-    byte[] maskData = ip.getMaskArray();
+    
     
     //double unSelval = 0;//(selPixels)? Double.NaN : 0;                  //if pixel level selection is required 
     //int idx = 0;
    // System.out.println("ArraySize "+ pixelData.length + "MaskSize "+maskData.length +"width="+width+" height= "+height + "");
-    if(!selPixels){
+    if(!selPixels || sel == null){
         for(int row = ry, my = 0 ; row < (ry+rh) ; my++, row++){
            // idx = row*width + rx;
             //int midx = my*rw;
@@ -323,14 +324,17 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel, boolean selPixels){
                     surface[my][mx] = (double)ip.getPixelValue(col, row);//(maskData == null || maskData[midx++] != 0) ?(double) ip.getPixelValue(col,row): unSelval;      
             }
         }
+        System.out.println("Pixel level selection is off");
     }else{
-        for(int row = ry, my = 0 ; row < ry ; my++, row++){
+        int maskPixCounter = 0;
+        for(int row = ry, my = 0 ; row < ry+rh ; my++, row++){
            // idx = row*width + rx;
             int midx = my*rw;
-            for(int col = rx, mx = 0 ; col < rx ; mx++, col++){   
-                    surface[my][mx] = (maskData == null || maskData[midx++] != 0) ?(double) ip.getPixelValue(col,row): selVal;/*unSelval*/;      
+            for(int col = rx, mx = 0 ; col < rx+rw ; mx++, col++){   
+                    surface[my][mx] = ( maskData[midx++] != 0) ?(double) ip.getPixelValue(col,row): selVal;/*unSelval*/;      
             }
         }
+        System.out.println("No of selected pixels: "+maskPixCounter);
     }
     double[][] SurfFit = FitSurfaceCoeff(surface);
 //    int Idx = 0;
