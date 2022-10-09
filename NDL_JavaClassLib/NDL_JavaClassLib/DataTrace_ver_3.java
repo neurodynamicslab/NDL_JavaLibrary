@@ -278,6 +278,8 @@ public class DataTrace_ver_3 extends ArrayList<OrdXYErrData>{
     private double HXLimit = Double.MAX_VALUE;
     private double HYLimit = Double.MAX_VALUE;
     
+    private double yScaler = 1.0;
+    
     
     /** Binning Data
      * 
@@ -285,7 +287,7 @@ public class DataTrace_ver_3 extends ArrayList<OrdXYErrData>{
     boolean binInY = true;
     double binWnd  = 0;
     
-    int SCALE = 0;       //SCALE = 0 - linear, 1 - ln, 2 - log, 3 - power of 2
+    int typOfBinning = 0;       //typOfBinning = 0 - linear, 1 - ln, 2 - log, 3 - power of 2
 
     //Iterator dataIterator;
     
@@ -304,16 +306,25 @@ public class DataTrace_ver_3 extends ArrayList<OrdXYErrData>{
         YData = new ArrayList<>();*/
     //}
     public void setScaleType(int stype){
-        SCALE = stype;
+        typOfBinning = stype;
     }
     public int getScaleType(){
-        return SCALE;    //SCALE = 0 - linear, 1 - ln, 2 - log, 3 - power of 2
+        return typOfBinning;    //SCALE = 0 - linear, 1 - ln, 2 - log, 3 - power of 2
     }
     public DataTrace_ver_3(){
         //rawData = new ArrayList<OrdXYData>();
         //dataIterator = rawData.iterator();
         
     }
+   public void scaleYaxis(double scaler){
+       this.setyScaler(scaler);
+       //ArrayList <Number> y = new ArrayList();
+       DataTrace_ver_3 scaledData = new DataTrace_ver_3();
+       int x,y,count = 0;
+       this.forEach((Data) -> {
+           Data.scaleY(scaler);
+       });
+   }
    public <B extends Number>DataTrace_ver_3(int datalength, B binWidth, boolean binInX){
        this.binWnd = binWidth.doubleValue();
        //rawData = new ArrayList(datalength);
@@ -325,7 +336,7 @@ public class DataTrace_ver_3 extends ArrayList<OrdXYErrData>{
             int idx = 0;          
             for(X x : xData){
                addData(x,yData[idx++]); // It is  more efficient to add it directly to rawdata instead of calling addData.
-                                             // But this ensures modularity. If any change to way we add elements we need to 
+                                             // But this ensures modularity. If any change in the way we add elements we need to 
                                              // modify one function and in one place i.e addData()              
             }
         }
@@ -372,6 +383,7 @@ public class DataTrace_ver_3 extends ArrayList<OrdXYErrData>{
         });
        return y;
    }
+  
    public <N extends Number> ArrayList getXErrs(){
       ArrayList <N> Xerr = new ArrayList();
        this.forEach((Data) -> {
@@ -506,7 +518,7 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
      double halfbinWidth = binWidth/2;
      double binStart = (double)((binInX) ? this.get(0).getX() : this.get(0).getY());
      
-    /* switch(this.SCALE){
+    /* switch(this.typOfBinning){
                  case 0:
                      break;
                  case 1:
@@ -565,7 +577,7 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
              sum = curY;
              sumSq = sum * sum ;
              count = 1;
-             switch(this.SCALE){
+             switch(this.typOfBinning){
                  case 0:
                      break;
                  case 1:
@@ -634,5 +646,19 @@ private <X extends Number, Y extends Number> void setStat(X xData,Y yData){
           return Integer.compare(t.getSerial(), t1.getSerial());
       }
   }
+
+    /**
+     * @return the yScaler
+     */
+    public double getyScaler() {
+        return yScaler;
+    }
+
+    /**
+     * @param yScaler the yScaler to set
+     */
+    public void setyScaler(double yScaler) {
+        this.yScaler = yScaler;
+    }
 
 }

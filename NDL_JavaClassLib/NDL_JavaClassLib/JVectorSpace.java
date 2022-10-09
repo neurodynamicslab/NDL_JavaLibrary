@@ -158,7 +158,7 @@ public class JVectorSpace {
     private boolean projectionStatus = false;
     private JVector prjTarget;
     private JVectorSpace projection;
-    
+    private boolean useTan2 = true;
  public double[] getCompArray(int Idx){
     double[] pixels;
     if( getSpace().isEmpty() || getVectors().isEmpty()){
@@ -412,18 +412,14 @@ public class JVectorSpace {
      return getProjection();
  }
  
- public void makeProjections2point(JVector positionVector, boolean along){
-     
-     
-    
+ public void makeProjections2point(JVector positionVector, boolean along){  
      double dotProd,mag,angle;
      int idx = 0,compCount;
      JVector tarVector, prjVector;
      ArrayList<Number> tarCord = new ArrayList(), curCord ;//= new Number[space.size()];
      ArrayList projVects = new ArrayList();
      double result;
-     for (var vect : this.vectors){
-         
+     for (var vect : this.vectors){      
            curCord = space.get(idx++).getXY();
            compCount = 0;
            tarCord = new ArrayList();
@@ -435,8 +431,9 @@ public class JVectorSpace {
            tarVector = new JVector(tarCord);   
            
            dotProd = vect.dotProduct(tarVector);
-           mag = dotProd/tarVector.getL2Norm();
-           angle =  Math.atan2(tarVector.getComponent(1).doubleValue(),tarVector.getComponent(0).doubleValue());        //vect.findAngle(tarVector); //Math.acos(tarVector.getComponent(0).doubleValue()/tarVector.getL2Norm());
+           mag = dotProd/tarVector.getL2Norm(); //The following could be optimised for speed by checking out of this loop calling separate functions 
+           angle =  (this.isUseTan2()) ? Math.atan2(tarVector.getComponent(1).doubleValue(),tarVector.getComponent(0).doubleValue())
+                                            : Math.atan(tarVector.getComponent(1).doubleValue()/tarVector.getComponent(0).doubleValue());                 
           // angle *= -1;               // Needed as the origin in our image is at top left corner and y axis
                                         // increases downwards. The angle returned by tan2 is angle from x - axis 
                                         // and inreases towards the positive direction of y axis. Thus in our system 
@@ -450,5 +447,19 @@ public class JVectorSpace {
      projection.vectors = projVects;
      System.out.println("Finished the dataset projections\n");
  }
+
+    /**
+     * @return the useTan2
+     */
+    public boolean isUseTan2() {
+        return useTan2;
+    }
+
+    /**
+     * @param useTan2 the useTan2 to set
+     */
+    public void setUseTan2(boolean useTan2) {
+        this.useTan2 = useTan2;
+    }
 
 }

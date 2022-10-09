@@ -36,4 +36,8 @@ public class OrdXYData<X extends Number, Y extends Number> extends Object{
     public int getSerial(){
         return serialNo;
     }
+    public void scaleY(double scaler) {
+        Number scaledY =  this.getY().doubleValue()*scaler;
+        this.yDataPt = (Y) scaledY;
+    }
 }

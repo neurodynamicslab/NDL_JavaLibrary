@@ -3,6 +3,10 @@ package NDL_JavaClassLib;
 import Jama.Matrix;
 import ij.ImagePlus;
 import ij.gui.Roi;
+import ij.plugin.RoiScaler;
+import ij.plugin.filter.GaussianBlur;
+import ij.plugin.filter.ThresholdToSelection;
+import ij.process.ByteProcessor;
 import ij.process.FloatProcessor;
 import ij.process.FloatStatistics;
 import ij.process.ImageProcessor;
@@ -16,6 +20,90 @@ import java.awt.Rectangle;
  * @author balam
  */
 public class SurfaceFit {
+
+    /**
+     * @return the preScale
+     */
+    public boolean isPreScale() {
+        return preScale;
+    }
+
+    /**
+     * @param preScale the preScale to set
+     */
+    public void setPreScale(boolean preScale) {
+        this.preScale = preScale;
+    }
+
+    /**
+     * @return the GaussFilt
+     */
+    public boolean isGaussFilt() {
+        return GaussFilt;
+    }
+
+    /**
+     * @param GaussFilt the GaussFilt to set
+     */
+    public void setGaussFilt(boolean GaussFilt) {
+        this.GaussFilt = GaussFilt;
+    }
+
+    /**
+     * @return the scaleBy
+     */
+    public double getScaleBy() {
+        return scaleBy;
+    }
+
+    /**
+     * @param scaleBy the scaleBy to set
+     */
+    public void setScaleBy(double scaleBy) {
+        this.scaleBy = scaleBy;
+    }
+
+    /**
+     * @return the gaussCtrX
+     */
+    public Integer getGaussCtrX() {
+        return gaussCtrX;
+    }
+
+    /**
+     * @param gaussCtrX the gaussCtrX to set
+     */
+    public void setGaussCtrX(Integer gaussCtrX) {
+        this.gaussCtrX = gaussCtrX;
+    }
+
+    /**
+     * @return the gaussCtrY
+     */
+    public Integer getGaussCtrY() {
+        return gaussCtrY;
+    }
+
+    /**
+     * @param gaussCtrY the gaussCtrY to set
+     */
+    public void setGaussCtrY(Integer gaussCtrY) {
+        this.gaussCtrY = gaussCtrY;
+    }
+
+    /**
+     * @return the gaussRad
+     */
+    public double getGaussRad() {
+        return gaussRad;
+    }
+
+    /**
+     * @param gaussRad the gaussRad to set
+     */
+    public void setGaussRad(double gaussRad) {
+        this.gaussRad = gaussRad;
+    }
 
     /**
      * @return the gFit
@@ -66,8 +154,17 @@ public class SurfaceFit {
     public void setPolyOrderX(int PolyOrderX) {
         this.PolyOrderX = PolyOrderX;
     }
+    
     private int PolyOrderX;
     private int PolyOrderY;
+    
+    private boolean preScale = false;
+    private boolean GaussFilt = false;
+    private double  scaleBy = 1.0;
+    
+    private Integer   gaussCtrX = null;
+    private Integer  gaussCtrY = null;
+    private double  gaussRad = 1.0;
     
 public  double[][] FitSurfaceCoeff( double[][] TheImage )
 {
@@ -254,11 +351,10 @@ System.out.println("Number of non NaN is :"+cnt+" Out of: "+Nrows*Ncols);
     
     return ( Gfit );
 } 
-/**It is the workhorse of class. This prepares the data for fitting a polynomial and calls the  FitSurfaceCoef()
- * to obtain the fit parameters. In this case these are the coefficients of the polynomial. 
- * The polyOrder needs to be set or default of order 5 is assumed. 
- * 
- * @param ip    The image processor (ImageJ) for the image
+/** * It is the workhorse of class.This prepares the data for fitting a polynomial and calls the  FitSurfaceCoef()
+ to obtain the fit parameters.In this case these are the coefficients of the polynomial. The polyOrder needs to be set or default of order 5 is assumed. 
+ *
+ * @param sp The image processor (ImageJ) for the image    
  * @param sel   An Roi object (ImageJ) that represents the area of interest (read on for the options and its meaning)
  * @param selPixels A boolean together with Roi defines specific cases as listed below:
  * @return It returns a float processor representing the image that is fit
@@ -269,7 +365,12 @@ System.out.println("Number of non NaN is :"+cnt+" Out of: "+Nrows*Ncols);
  **/
 public FloatProcessor FitSurface(ImageProcessor sp, Roi sel, boolean selPixels){
     double mean ;
-    var ip = sp.convertToFloatProcessor();
+    ImageProcessor ip = sp;// = (this.isPreScale())? scale(sp): sp.convertToFloatProcessor();
+    if(isPreScale()){
+        ip = scale(sp);
+        sel = scaleRoi(sel); 
+    }
+    ip = (this.isGaussFilt())?gaussSmooth(ip,sel): ip;
     var fp = new FloatStatistics(ip);
     mean = fp.mean;
     var orgMean = mean;
@@ -326,15 +427,16 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel, boolean selPixels){
         }
         System.out.println("Pixel level selection is off");
     }else{
-        int maskPixCounter = 0;
+       // int maskPixCounter = 0;
         for(int row = ry, my = 0 ; row < ry+rh ; my++, row++){
            // idx = row*width + rx;
             int midx = my*rw;
             for(int col = rx, mx = 0 ; col < rx+rw ; mx++, col++){   
-                    surface[my][mx] = ( maskData[midx++] != 0) ?(double) ip.getPixelValue(col,row): selVal;/*unSelval*/;      
+                    surface[my][mx] = ( maskData[midx++] != 0) ?(double) ip.getPixelValue(col,row): selVal;/*unSelval*/ 
+                   
             }
         }
-        System.out.println("No of selected pixels: "+maskPixCounter);
+//        System.out.println("No of selected pixels: "+maskPixCounter);
     }
     double[][] SurfFit = FitSurfaceCoeff(surface);
 //    int Idx = 0;
@@ -373,7 +475,48 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel, boolean selPixels){
 //        ImagePlus fitTst = new ImagePlus("Tst");
 //        fitTst.setProcessor(fitSurface);
 //        fitTst.show();
+    if(this.isPreScale())
+        this.rescale(fitSurface);
         
   return fitSurface;
  }
+
+   
+
+    private ImageProcessor scale(ImageProcessor sp) {
+        
+        ImageProcessor ip = sp.duplicate();
+        double scaleto = getScaleBy();
+        ip.resize((int)Math.round(scaleto*ip.getWidth()),(int)Math.round(scaleto*ip.getHeight()),true);
+        
+        return ip;
+    }
+    private ImageProcessor rescale(ImageProcessor ip){
+        ImageProcessor sp = ip.duplicate();
+        double rescale = 1/getScaleBy();
+        sp.resize((int)Math.round(rescale*sp.getWidth()),(int)Math.round(rescale*sp.getHeight()),true);
+        
+        return sp;
+//        ImageProcessor selMask  = sel.getMask();
+//        selMask.scale(rescale, rescale);
+//        selMask.setThreshold(1, 255, 0);
+//        Roi scaledRoi = new ThresholdToSelection().convert(selMask);
+//        sel = scaledRoi;
+//        
+//        sp.setRoi(sel);
+    }
+    private Roi scaleRoi(Roi sel){
+        
+        return RoiScaler.scale(sel, getScaleBy(), getScaleBy(), false);
+        
+    }
+
+    private ImageProcessor gaussSmooth(ImageProcessor sp, Roi sel) {
+        ImageProcessor ip = sp.duplicate();
+        if(sel != null)
+            sp.setRoi(sel);
+        GaussianBlur gBlur = new GaussianBlur();
+        gBlur.blurGaussian(ip, this.getGaussRad());
+        return ip;
+    }
 }
