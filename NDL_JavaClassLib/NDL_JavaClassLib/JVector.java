@@ -27,6 +27,11 @@ public class JVector<N extends Number> {
         Components.add(Ycord);
         this.calculateNorm();
     }
+    public JVector(JVector vector){
+        Components.addAll(vector.Components);
+        this.setNorm(vector.getL1Norm(),vector.getL2Norm(),vector.getMaxNorm());
+        setNormsReady(vector.isNormsReady());
+    }
     public JVector(N [] C){
         Components = new ArrayList<>();
         Components.addAll(Arrays.asList(C));
@@ -158,6 +163,7 @@ public class JVector<N extends Number> {
         sum.addMoreComp(Comp);
         return sum;
     }
+    
     public void add2this(JVector vect){
         JVector sumVect;
         sumVect = add(this,vect);
@@ -175,6 +181,23 @@ public class JVector<N extends Number> {
        }
         scaledVect = new JVector(scaledC);
         return scaledVect;
+    }
+    public JVector getScaledVector(JVector scalingVect){
+        if(scalingVect.getNComponents() != this.getNComponents())
+            return null;
+        JVector scaledVect;
+        ArrayList<Number> scaledC = new ArrayList();
+        int Idx  = 0;
+        for(Number x : Components){
+           //scaledC.add(Idx, (Double)Components.get(Idx)*(Double)scale);
+           scaledC.add(x.doubleValue() * scalingVect.getComponent(Idx).doubleValue());
+           Idx++;
+       }
+       scaledVect = new JVector(scaledC);
+       return scaledVect;
+    }
+    public JVector getCalibratedVector(JVector max, JVector min, double maxUnits,double minUnits){
+        
     }
     public void scale(N scale){
         Components = getScaledVector(scale).Components;

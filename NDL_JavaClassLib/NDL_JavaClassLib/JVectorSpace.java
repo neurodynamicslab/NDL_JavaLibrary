@@ -152,6 +152,8 @@ public class JVectorSpace {
     
     private ArrayList<OrdXYData> space;
     private ArrayList<JVector> vectors;
+    private JVector maxVector, minVector;       //vector contructed using maximum and minimum componenets from the vector space. Note
+                                                //this is a fictious vector and may not co-respond to any one of the added vectors found in vector space.
     private int xRes, yRes,xMax,yMax;
     private boolean resMismatch;
     private int nComp; //Helps to keep track of dimensionality of the vectors space (i.e all vectors have same number of components 
@@ -159,6 +161,7 @@ public class JVectorSpace {
     private JVector prjTarget;
     private JVectorSpace projection;
     private boolean useTan2 = true;
+    private boolean chkMinMaxandAdd = false;
  public double[] getCompArray(int Idx){
     double[] pixels;
     if( getSpace().isEmpty() || getVectors().isEmpty()){
@@ -177,23 +180,10 @@ public class JVectorSpace {
     int maxIdx = getxRes() * getyRes();
     pixels = new double[maxIdx];
     
-//    int pixelCount = 0, arrayIdx;
-//        //System.out.print("xRes = "+getxRes()+"\n");
-//    for ( OrdXYData curPixel : getSpace()){
-//        arrayIdx = (int) (Math.round((double)curPixel.getY()) + Math.round((double)curPixel.getX() * getyRes()));
-//        //System.out.print(""+curPixel.getX()+"\t"+curPixel.getY()+"\t"+arrayIdx+"\n");
-//        if(arrayIdx < (getxRes() * getyRes())){
-//            JVector vect = getVectors().get(pixelCount);
-//            pixels[arrayIdx] = (double)vect.getComponent(Idx);
-//        }else{
-//            javax.swing.JOptionPane.showMessageDialog
-//                    (null, "Array index " +arrayIdx +" does not match the resolution of image :" + getxRes() + getyRes() +"\n");
-//        }
-//        pixelCount++;
-//    }
+
 
     double[][] tempArray = new double[getxRes()][getyRes()];
-    float [][] nData = new float[getxRes()][getyRes()];
+    //float [][] nData = new float[getxRes()][getyRes()];
     int currX, currY;
     int dataIdx = 0;
     for(OrdXYData curPixel : getSpace()){
@@ -205,7 +195,7 @@ public class JVectorSpace {
     }
     int nRow = 0, nCol = 0;
     int arrayIdx;
-    float no = 0;
+    //float no = 0;
 
     for(double[] Cols: tempArray){  
         for(double Val : Cols){ 
@@ -271,8 +261,11 @@ public class JVectorSpace {
      int currX = (int) Math.round((double)coordinates.getX()); 
      int currY = (int) Math.round((double)coordinates.getY());
      int currComp = vector.getNComponents();
-        if(this.vectors.isEmpty())
+        if(this.vectors.isEmpty()){
             this.setnComp(vector.getNComponents());
+            this.maxVector = new JVector(vector);
+            this.minVector = new JVector(vector);
+        }
         if(currComp != getnComp()){
             javax.swing.JOptionPane.showMessageDialog(null, "Found vector component mismatch");
             return;
@@ -287,7 +280,9 @@ public class JVectorSpace {
             setyRes(currY >= getyRes() ? currY : getyRes());  
             setResMismatch(false);
      }
-     
+        if(this.isChkMinMaxandAdd())
+            checkAndsetMinMax(vector);
+        
         getSpace().add(coordinates);
         getVectors().add(vector);
  }
@@ -460,6 +455,72 @@ public class JVectorSpace {
      */
     public void setUseTan2(boolean useTan2) {
         this.useTan2 = useTan2;
+    }
+
+    /**
+     * @return the maxVector
+     */
+    public JVector getMaxVector() {
+        return maxVector;
+    }
+
+    /**
+     * @param maxVector the maxVector to set
+     */
+    public void setMaxVector(JVector maxVector) {
+        this.maxVector = maxVector;
+    }
+
+    /**
+     * @return the minVector
+     */
+    public JVector getMinVector() {
+        return minVector;
+    }
+
+    /**
+     * @param minVector the minVector to set
+     */
+    public void setMinVector(JVector minVector) {
+        this.minVector = minVector;
+    }
+
+    private void checkAndsetMinMax(JVector vector) {
+        
+        int nComps  = vector.getNComponents();
+        Number currComp;
+        for( int compCnt = 0 ; compCnt < nComps; compCnt++){
+            
+            currComp = vector.getComponent(compCnt);
+            var maxComp = maxVector.getComponent(compCnt);
+            var minComp = minVector.getComponent(compCnt);
+            
+            maxComp = (maxComp.doubleValue() > currComp.doubleValue())? maxComp : currComp;
+            minComp = (minComp.doubleValue() < currComp.doubleValue())? minComp : currComp;
+            
+            maxVector.Components.add(compCnt, maxComp);
+            minVector.Components.add(compCnt,minComp);
+        }
+    }
+    
+    public void findMinandMax(){
+        for(JVector currVector : this.vectors){
+            this.checkAndsetMinMax(currVector);
+        }
+    }
+
+    /**
+     * @return the chkMinMaxandAdd
+     */
+    public boolean isChkMinMaxandAdd() {
+        return chkMinMaxandAdd;
+    }
+
+    /**
+     * @param chkMinMaxandAdd the chkMinMaxandAdd to set
+     */
+    public void setChkMinMaxandAdd(boolean chkMinMaxandAdd) {
+        this.chkMinMaxandAdd = chkMinMaxandAdd;
     }
 
 }
