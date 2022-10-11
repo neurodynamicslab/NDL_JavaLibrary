@@ -197,6 +197,13 @@ public class JVector<N extends Number> {
        return scaledVect;
     }
     public JVector getCalibratedVector(JVector max, JVector min, double maxUnits,double minUnits){
+        double unitsRange =  maxUnits - minUnits ;
+        
+        for(Number N : Components){
+            
+        }
+        
+        
         
     }
     public void scale(N scale){
