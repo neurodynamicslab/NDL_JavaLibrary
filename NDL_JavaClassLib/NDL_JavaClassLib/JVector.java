@@ -197,14 +197,24 @@ public class JVector<N extends Number> {
        return scaledVect;
     }
     public JVector getCalibratedVector(JVector max, JVector min, double maxUnits,double minUnits){
-        double unitsRange =  maxUnits - minUnits ;
         
+        ArrayList calibComp = new ArrayList();
+        double unitsRange =  maxUnits - minUnits ;
+        int compIdx = 0;
+        double maxC,minC,currC;
         for(Number N : Components){
             
+            maxC = max.getComponent(compIdx).doubleValue();
+            minC = min.getComponent(compIdx).doubleValue();
+            
+            var unit = (maxC - minC)/unitsRange;
+            currC = N.doubleValue()*unit;
+            calibComp.add(compIdx,currC);
+            
+            compIdx++;          
         }
         
-        
-        
+        return new JVector(calibComp);
     }
     public void scale(N scale){
         Components = getScaledVector(scale).Components;

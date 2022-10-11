@@ -400,6 +400,16 @@ public class JVectorSpace {
      
      return scaledSpace;
  }
+ public JVectorSpace calibrateVectors(double maxUnit, double minUnit){
+     JVectorSpace calibSpace = new JVectorSpace(this.xRes,this.yRes);
+     JVector calibVector;
+     int elementIdx = 0;
+     for(OrdXYData coOrd : this.space){
+        calibVector = this.vectors.get(elementIdx).getCalibratedVector(maxVector, minVector, maxUnit, minUnit);
+        calibSpace.addVector(coOrd,calibVector,false);
+     }
+     return calibSpace;
+ }
  public JVectorSpace getProjections2point( JVector Vector, boolean along){
      makeProjections2point(Vector, along);
      this.setPrjTarget(Vector);
@@ -520,6 +530,8 @@ public class JVectorSpace {
      * @param chkMinMaxandAdd the chkMinMaxandAdd to set
      */
     public void setChkMinMaxandAdd(boolean chkMinMaxandAdd) {
+        if(chkMinMaxandAdd)
+            this.findMinandMax();
         this.chkMinMaxandAdd = chkMinMaxandAdd;
     }
 
