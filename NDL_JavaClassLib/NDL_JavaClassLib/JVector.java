@@ -28,6 +28,7 @@ public class JVector<N extends Number> {
         this.calculateNorm();
     }
     public JVector(JVector vector){
+        Components = new ArrayList();
         Components.addAll(vector.Components);
         this.setNorm(vector.getL1Norm(),vector.getL2Norm(),vector.getMaxNorm());
         setNormsReady(vector.isNormsReady());
@@ -207,8 +208,8 @@ public class JVector<N extends Number> {
             maxC = max.getComponent(compIdx).doubleValue();
             minC = min.getComponent(compIdx).doubleValue();
             
-            var unit = (maxC - minC)/unitsRange;
-            currC = N.doubleValue()*unit;
+            var unit = unitsRange/(maxC - minC);
+            currC = (N.doubleValue()- minC)*unit + minUnits;
             calibComp.add(compIdx,currC);
             
             compIdx++;          
