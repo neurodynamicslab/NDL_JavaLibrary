@@ -28,6 +28,7 @@ public class JVector<N extends Number> {
         this.calculateNorm();
     }
     public JVector(JVector vector){
+        Components = new ArrayList<>();
         Components.addAll(vector.Components);
         this.setNorm(vector.getL1Norm(),vector.getL2Norm(),vector.getMaxNorm());
         setNormsReady(vector.isNormsReady());

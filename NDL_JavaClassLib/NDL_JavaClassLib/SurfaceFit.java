@@ -369,6 +369,7 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel, boolean selPixels){
     if(isPreScale()){
         ip = scale(sp);
         sel = scaleRoi(sel); 
+        //ip.setRoi(sel);
     }
     ip = (this.isGaussFilt())?gaussSmooth(ip,sel): ip;
     var fp = new FloatStatistics(ip);
@@ -476,16 +477,18 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel, boolean selPixels){
 //        fitTst.setProcessor(fitSurface);
 //        fitTst.show();
     if(this.isPreScale())
-        this.rescale(fitSurface);
-        
+       fitSurface = (FloatProcessor) this.rescale(fitSurface);
+//        FloatProcessor fitSurface = new FloatProcessor(pixelVal);
+//        ImagePlus fitTst = new ImagePlus("Tst");
+//        fitTst.setProcessor(fitSurface);
+//        fitTst.show();
   return fitSurface;
  }
-
-   
 
     private ImageProcessor scale(ImageProcessor sp) {
         
         ImageProcessor ip = sp.duplicate();
+        ip.resetRoi();
         double scaleto = getScaleBy();
         ip.resize((int)Math.round(scaleto*ip.getWidth()),(int)Math.round(scaleto*ip.getHeight()),true);
         
@@ -494,8 +497,11 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel, boolean selPixels){
     private ImageProcessor rescale(ImageProcessor ip){
         ImageProcessor sp = ip.duplicate();
         double rescale = 1/getScaleBy();
-        sp.resize((int)Math.round(rescale*sp.getWidth()),(int)Math.round(rescale*sp.getHeight()),true);
-        
+        sp.resetRoi();
+        sp = sp.resize((int)Math.round(rescale*sp.getWidth()),(int)Math.round(rescale*sp.getHeight()),true);
+        System.out.printf(" Rescaled the image by %f\n", rescale);
+        System.out.printf(" The new imagewidth is %d x %d\n", sp.getWidth(),sp.getHeight());
+        //ip = sp;
         return sp;
 //        ImageProcessor selMask  = sel.getMask();
 //        selMask.scale(rescale, rescale);
