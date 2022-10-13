@@ -403,6 +403,8 @@ public class JVectorSpace {
  public JVectorSpace calibrateVectors(double maxUnit, double minUnit){
      JVectorSpace calibSpace = new JVectorSpace(this.xRes,this.yRes);
      JVector calibVector;
+     if(!this.isChkMinMaxandAdd())
+         this.findMinandMax();
      int elementIdx = 0;
      for(OrdXYData coOrd : this.space){
         calibVector = this.vectors.get(elementIdx).getCalibratedVector(maxVector, minVector, maxUnit, minUnit);
@@ -514,7 +516,7 @@ public class JVectorSpace {
     }
     
     public void findMinandMax(){
-        for(JVector currVector : this.vectors){
+        for(JVector currVector : vectors){
             this.checkAndsetMinMax(currVector);
         }
     }
