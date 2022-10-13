@@ -31,6 +31,7 @@ public class JVector<N extends Number> {
         Components = new ArrayList();
         Components.addAll(vector.Components);
         this.setNorm(vector.getL1Norm(),vector.getL2Norm(),vector.getMaxNorm());
+        System.out.printf("L1:%f,L2:%f,Mx:%f\n",getL1Norm(),getL2Norm(),getMaxNorm());
         setNormsReady(vector.isNormsReady());
     }
     public JVector(N [] C){
@@ -212,6 +213,7 @@ public class JVector<N extends Number> {
             currC = (N.doubleValue()- minC)*unit + minUnits;
             calibComp.add(compIdx,currC);
             
+//            System.out.printf("MaxC: %f, MinC: %f, currC: %f \n",maxC,minC,currC);        
             compIdx++;          
         }
         

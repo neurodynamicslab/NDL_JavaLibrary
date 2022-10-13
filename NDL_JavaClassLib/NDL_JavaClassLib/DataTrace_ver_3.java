@@ -171,6 +171,26 @@ public class DataTrace_ver_3 extends ArrayList<OrdXYErrData>{
     public boolean populateData(String fileName,int nDataSegments,boolean SD){
         return populateData(fileName, ""+'\t','\n',nDataSegments,SD);
     }
+    public DataTrace_ver_3 normalise(int choice){
+        
+        DataTrace_ver_3 NData = new DataTrace_ver_3();
+        switch(choice){
+            case 1:     //Norm Y  maximum to 1
+                double maximum = this.getYMax();
+                double minimum = this.getYMin();
+                double range = maximum - minimum;
+                for(var curData : this){
+                   var dataY =  (curData.getY().doubleValue() - minimum)/range;
+                   NData.addData(curData.getX(), dataY);
+                }
+            break;
+            case 2:
+            case 3:
+            default :
+                
+        }
+        return NData;
+    }
     /**
      * @return the xRoundoff
      */
