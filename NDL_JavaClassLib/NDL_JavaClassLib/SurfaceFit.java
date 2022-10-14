@@ -160,6 +160,9 @@ public class SurfaceFit {
     
     private boolean preScale = false;
     private boolean GaussFilt = false;
+    private boolean UseSelection = true;
+    private boolean SelectPixels = false;
+    
     private double  scaleBy = 1.0;
     
     private Integer   gaussCtrX = null;
@@ -363,7 +366,7 @@ System.out.println("Number of non NaN is :"+cnt+" Out of: "+Nrows*Ncols);
  * sel has a Roi and selPixels is false square/rectangle region of interest with 0 for pixels of unmasked
  * sel has Roi and selpixels is true just the pixels that are selected by roi mask
  **/
-public FloatProcessor FitSurface(ImageProcessor sp, Roi sel, boolean selPixels){
+public FloatProcessor FitSurface(ImageProcessor sp, Roi sel){
     double mean ;
     ImageProcessor ip = sp;// = (this.isPreScale())? scale(sp): sp.convertToFloatProcessor();
     if(isPreScale()){
@@ -379,7 +382,7 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel, boolean selPixels){
     int rx, ry, rw, rh;
     byte[] maskData = null; 
     double selVal = 0;
-    if(sel != null ){
+    if(sel != null && this.isUseSelection()){
         ip.setRoi(sel);
         mean = new FloatStatistics(ip).mean;
         var bRect =sel.getBounds();
@@ -388,9 +391,13 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel, boolean selPixels){
         rw = bRect.width;
         rh = bRect.height;
         maskData = ip.getMaskArray();//(byte [])sel.getMask().getPixels();
-        selVal = (selPixels)? Double.NaN : 0;   //roi is provided but unsampled space inside the rect sele is filled with 0
+        selVal = (this.isSelectPixels())? Double.NaN : 0;   //roi is provided but unsampled space inside the rect sele is filled with 0
     }else{                                   //selection is not provided by the user
-                                            
+        if(this.isUseSelection()&& sel != null)   
+            ip.setRoi(sel);
+        else
+            ip.resetRoi();
+        
         Rectangle rectRoi = ip.getRoi();  
         rx = rectRoi.x;
         ry = rectRoi.y;
@@ -403,7 +410,7 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel, boolean selPixels){
     mean *= -1;
     ip.add(mean);
     
-    System.out.println("Mean to be added: "+mean+" Mean on entry: "+orgMean*-1+" Using selection "+ (sel != null)+"Mask is "+(ip.getMask()!= null));
+    System.out.println("Mean to be added: "+mean+" Mean on entry: "+orgMean*-1+" Selection provided:  "+ (sel != null)+" Mask is "+(ip.getMask()!= null));
     System.out.println("The width is :" + rw +", "+rx+"The height is "+ rh +"," +ry);
 //    ImagePlus imp = new ImagePlus("Aft Mean sub");
 //    imp.setProcessor(ip);
@@ -418,7 +425,7 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel, boolean selPixels){
     //double unSelval = 0;//(selPixels)? Double.NaN : 0;                  //if pixel level selection is required 
     //int idx = 0;
    // System.out.println("ArraySize "+ pixelData.length + "MaskSize "+maskData.length +"width="+width+" height= "+height + "");
-    if(!selPixels || sel == null){
+    if(!this.isSelectPixels() || sel == null){
         for(int row = ry, my = 0 ; row < (ry+rh) ; my++, row++){
            // idx = row*width + rx;
             //int midx = my*rw;
@@ -524,5 +531,33 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel, boolean selPixels){
         GaussianBlur gBlur = new GaussianBlur();
         gBlur.blurGaussian(ip, this.getGaussRad());
         return ip;
+    }
+
+    /**
+     * @return the UseSelection
+     */
+    public boolean isUseSelection() {
+        return UseSelection;
+    }
+
+    /**
+     * @param UseSelection the UseSelection to set
+     */
+    public void setUseSelection(boolean UseSelection) {
+        this.UseSelection = UseSelection;
+    }
+
+    /**
+     * @return the SelectPixels
+     */
+    public boolean isSelectPixels() {
+        return SelectPixels;
+    }
+
+    /**
+     * @param SelectPixels the SelectPixels to set
+     */
+    public void setSelectPixels(boolean SelectPixels) {
+        this.SelectPixels = SelectPixels;
     }
 }
