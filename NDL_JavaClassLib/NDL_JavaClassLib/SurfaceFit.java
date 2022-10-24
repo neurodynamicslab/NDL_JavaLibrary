@@ -169,6 +169,9 @@ public class SurfaceFit {
     private Integer  gaussCtrY = null;
     private double  gaussRad = 1.0;
     
+    private int OriginalX;
+    private int OriginalY;
+    
 public  double[][] FitSurfaceCoeff( double[][] TheImage )
 {
     int Nrows = TheImage.length;
@@ -370,8 +373,10 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel){
     double mean ;
     ImageProcessor ip = sp;// = (this.isPreScale())? scale(sp): sp.convertToFloatProcessor();
     if(isPreScale()){
+        
         ip = scale(sp);
         sel = scaleRoi(sel); 
+        
         //ip.setRoi(sel);
     }
     ip = (this.isGaussFilt())?gaussSmooth(ip,sel): ip;
@@ -382,7 +387,9 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel){
     int rx, ry, rw, rh;
     byte[] maskData = null; 
     double selVal = 0;
-    if(sel != null && this.isUseSelection()){
+    if(!this.isUseSelection()&& !this.SelectPixels)
+        ip.resetRoi();
+    if(sel != null ){
         ip.setRoi(sel);
         mean = new FloatStatistics(ip).mean;
         var bRect =sel.getBounds();
@@ -393,11 +400,7 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel){
         maskData = ip.getMaskArray();//(byte [])sel.getMask().getPixels();
         selVal = (this.isSelectPixels())? Double.NaN : 0;   //roi is provided but unsampled space inside the rect sele is filled with 0
     }else{                                   //selection is not provided by the user
-        if(this.isUseSelection()&& sel != null)   
-            ip.setRoi(sel);
-        else
-            ip.resetRoi();
-        
+                
         Rectangle rectRoi = ip.getRoi();  
         rx = rectRoi.x;
         ry = rectRoi.y;
@@ -494,18 +497,24 @@ public FloatProcessor FitSurface(ImageProcessor sp, Roi sel){
 
     private ImageProcessor scale(ImageProcessor sp) {
         
+        OriginalX = sp.getWidth();
+        OriginalY = sp.getHeight();
+        
         ImageProcessor ip = sp.duplicate();
         ip.resetRoi();
+        ip.setInterpolationMethod(ImageProcessor.BICUBIC);
         double scaleto = getScaleBy();
         ip.resize((int)Math.round(scaleto*ip.getWidth()),(int)Math.round(scaleto*ip.getHeight()),true);
         
         return ip;
     }
     private ImageProcessor rescale(ImageProcessor ip){
-        ImageProcessor sp = ip.duplicate();
+        //ImageProcessor sp = ip.duplicate();
         double rescale = 1/getScaleBy();
-        sp.resetRoi();
-        sp = sp.resize((int)Math.round(rescale*sp.getWidth()),(int)Math.round(rescale*sp.getHeight()),true);
+        ip.resetRoi();
+        ip.setInterpolationMethod(ImageProcessor.BICUBIC);
+        //sp = sp.resize((int)Math.round(rescale*sp.getWidth()),(int)Math.round(rescale*sp.getHeight()),true);
+        ImageProcessor sp = ip.resize(OriginalX,OriginalY,true);
         System.out.printf(" Rescaled the image by %f\n", rescale);
         System.out.printf(" The new imagewidth is %d x %d\n", sp.getWidth(),sp.getHeight());
         //ip = sp;
